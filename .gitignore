@@ -1,0 +1,13 @@
+brawl/.vs
+.vs
+*.suo
+*.db
+*.exe
+*.ilk
+*.pdb
+*.obj
+*.recipe
+*.log
+*.idb
+*.tlog
+*.lastbuildstate
