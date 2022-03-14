@@ -26,6 +26,7 @@ UxVoid Server::Initialize()
 
 	std::wcout.imbue( std::locale( "korean" ) );
 
+	if ( !m_sockUtil.StaticInitialize() ) exit( 1 );
 
 	m_iocp = CreateIoCompletionPort( INVALID_HANDLE_VALUE, NULL, NULL, 0 );
 

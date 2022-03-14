@@ -1,5 +1,6 @@
 
 
+#include "Protocol.h"
 #include "Header.h"
 #include "Global.h"
 #include "Server.h"
@@ -128,6 +129,88 @@ message WorkerThread::ProcPacket( int id, void* buf )
 	switch ( packet[1] )
 	{
 	// 패킷 종류따라 처리
+
+	case CS_LOGIN:
+	{
+
+	}
+	break;
+	case CS_JOIN_GAME:
+	{
+
+	}
+	break;
+	case CS_EXIT_GAME:
+	{
+
+	}
+	break;
+	case CS_MAKE_ROOM:
+	{
+
+	}
+	break;
+	case CS_JOIN_ROOM:
+	{
+
+	}
+	break;
+	case CS_ROOM_LIST:
+	{
+
+	}
+	break;
+	case CS_SELECT_CHARACTER:
+	{
+
+	}
+	break;
+	case CS_READY:
+	{
+
+	}
+	break;
+	case CS_UN_READY:
+	{
+
+	}
+	break;
+	case CS_LEAVE_ROOM:
+	{
+
+	}
+	break;
+	case CS_POSITION:
+	{
+
+	}
+	break;
+	case CS_ROTATE:
+	{
+
+	}
+	break;
+	case CS_ANIMATION:
+	{
+
+	}
+	break;
+	case CS_ATTACK:
+	{
+
+	}
+	break;
+	case CS_HEART_DECREAS:
+	{
+
+	}
+	break;
+	case CS_DIE:
+	{
+
+	}
+	break;
+
 	default:
 		std::cout << "[LOG] Invalid Packet Type Error!\n";
 		while ( true );

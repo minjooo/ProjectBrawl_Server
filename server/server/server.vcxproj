@@ -143,23 +143,27 @@
     <ClInclude Include="Header.h" />
     <ClInclude Include="MyThread.h" />
     <ClInclude Include="Protocol.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SocketUtil.h" />
     <ClInclude Include="ThreadHandler.h" />
+    <ClInclude Include="TimerThread.h" />
     <ClInclude Include="TypeDef.h" />
     <ClInclude Include="WorkerThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyThread.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="SocketUtil.cpp" />
     <ClCompile Include="ThreadHandler.cpp" />
+    <ClCompile Include="TimerThread.cpp" />
     <ClCompile Include="WorkerThread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

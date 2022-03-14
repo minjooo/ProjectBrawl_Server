@@ -18,8 +18,18 @@ constexpr UxInt32 eventKey	= 10000;
 
 enum class EEventType
 {
-	RECV,
-	SEND
+	RECV, SEND,
+	TICK
+};
+
+struct EVENT {
+	UxInt32 id;
+	UxInt32 target;
+	std::chrono::high_resolution_clock::time_point wakeup_time;
+	EEventType event_type;
+	constexpr UxBool operator<( const EVENT& rhs ) const {
+		return wakeup_time > rhs.wakeup_time;
+	}
 };
 
 struct OVER_EX 

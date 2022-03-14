@@ -21,6 +21,9 @@
     <Filter Include="Socket">
       <UniqueIdentifier>{8298e7d2-f49e-4bb4-8fed-557025034f86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Room">
+      <UniqueIdentifier>{c01428c5-d445-4407-a1e5-455eb6e4c97b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -59,6 +62,12 @@
     <ClInclude Include="WorkerThread.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="TimerThread.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Room</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -84,6 +93,12 @@
     </ClCompile>
     <ClCompile Include="WorkerThread.cpp">
       <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerThread.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Room</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
