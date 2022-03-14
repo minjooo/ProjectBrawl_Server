@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{19bd78b1-2093-45a0-acf3-a0deabdedec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{f804390e-c501-46a4-a99a-86c300c6e8da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server">
+      <UniqueIdentifier>{52c831b6-66ad-4a43-9c29-363e04c1b464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Socket">
+      <UniqueIdentifier>{8298e7d2-f49e-4bb4-8fed-557025034f86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Singleton.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeDef.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Socket.h">
+      <Filter>Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketAddress.h">
+      <Filter>Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketUtil.h">
+      <Filter>Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="MyThread.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadHandler.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkerThread.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Socket.cpp">
+      <Filter>Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketAddress.cpp">
+      <Filter>Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketUtil.cpp">
+      <Filter>Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="MyThread.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadHandler.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkerThread.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
