@@ -17,7 +17,7 @@ public:
 	UxVoid Update();
 
 public:
-	UxVoid PushMsg( UxInt8* msg);
+	UxVoid PushMsg( const message& msg );
 	UxBool IsEmpty();
 	UxBool IsGameStarted();
 
@@ -32,7 +32,7 @@ public:
 	UxVoid GameOver( UxInt32 winner );
 
 private:
-	std::queue<UxInt8*> m_roomMsg;
+	std::queue<message> m_roomMsg;
 	UxBool m_isGameStarted;
 
 	UxInt32 m_roomNum;

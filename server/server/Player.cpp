@@ -78,6 +78,32 @@ UxInt32 Player::GetHeartNum()
 	return m_heart;
 }
 
+UxSingle Player::GetPosX()
+{
+	return m_x;
+}
+
+UxSingle Player::GetPosY()
+{
+	return m_y;
+}
+
+UxVoid Player::SetPos( UxSingle x, UxSingle y )
+{
+	m_x = x;
+	m_y = y;
+}
+
+UxVoid Player::SetAnim( UxInt8 anim )
+{
+	m_animation = anim;
+}
+
+UxVoid Player::SetCharacter( UxInt8 character )
+{
+	m_character = character;
+}
+
 UxVoid Player::SetDie()
 {
 	m_isAlive = false;

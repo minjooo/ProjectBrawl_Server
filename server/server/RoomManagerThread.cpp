@@ -50,17 +50,17 @@ UxVoid RoomManagerThread::ProcThread()
 			break;
 			case CS_SELECT_CHARACTER:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_READY:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_UN_READY:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_LEAVE_ROOM:
@@ -73,32 +73,32 @@ UxVoid RoomManagerThread::ProcThread()
 			break;
 			case CS_POSITION:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_ROTATE:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_ANIMATION:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_ATTACK:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_HEART_DECREAS:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			case CS_DIE:
 			{
-				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( packet );
+				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 			}
 			break;
 			default:

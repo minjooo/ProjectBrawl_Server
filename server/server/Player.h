@@ -21,8 +21,13 @@ public:
 	UxInt32 GetId();
 	UxBool GetReady();
 	UxInt32 GetHeartNum();
+	UxSingle GetPosX();
+	UxSingle GetPosY();
 
 	UxVoid SetReady( UxBool input );
+	UxVoid SetPos( UxSingle x, UxSingle y );
+	UxVoid SetAnim( UxInt8 anim );
+	UxVoid SetCharacter( UxInt8 character );
 	UxVoid SetDie();
 	UxVoid DeductHeart();
 
@@ -40,5 +45,7 @@ private:
 	UxInt8 m_character;
 	UxInt8 m_animation;
 
-	//위치, 방향 가지고있어야 함
+	//방향 가지고있어야 함
+	UxSingle m_x;
+	UxSingle m_y;
 };

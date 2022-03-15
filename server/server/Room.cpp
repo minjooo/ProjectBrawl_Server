@@ -50,54 +50,60 @@ UxVoid Room::Update()
 	//msgQueue내용 반영
 	while ( !m_roomMsg.empty() )
 	{
-		char* msg = m_roomMsg.front();
+		message msg = m_roomMsg.front();
 		m_roomMsg.pop();
 
-		switch ( msg[1] )
+		char* packet = reinterpret_cast< char* >( msg.buff );
+
+		switch ( packet[1] )
 		{
 		case CS_SELECT_CHARACTER:
 		{
-			//다 각각 반영하기
+			csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
+			m_players[msg.id]->SetCharacter( tmpPacket->character );
 		}
 		break;
 		case CS_READY:
 		{
-
+			m_players[msg.id]->SetReady( true );
 		}
 		break;
 		case CS_UN_READY:
 		{
-
+			m_players[msg.id]->SetReady( false );
 		}
 		break;
 		case CS_POSITION:
 		{
-
+			csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
+			m_players[msg.id]->SetPos( tmpPacket->x, tmpPacket->y );
 		}
 		break;
 		case CS_ROTATE:
 		{
-
+			//나중에 결정되면 추가 필요
 		}
 		break;
 		case CS_ANIMATION:
 		{
-
+			csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
+			m_players[msg.id]->SetAnim( tmpPacket->anim );
 		}
 		break;
 		case CS_ATTACK:
 		{
-
+			//나중에 추가 필요
 		}
 		break;
 		case CS_HEART_DECREAS:
 		{
-
+			m_players[msg.id]->DeductHeart();
+			//죽었나 봐야하나?
 		}
 		break;
 		case CS_DIE:
 		{
-
+			m_players[msg.id]->SetDie();
 		}
 		break;
 		default:
@@ -108,7 +114,7 @@ UxVoid Room::Update()
 	//send
 }
 
-UxVoid Room::PushMsg( UxInt8* msg)
+UxVoid Room::PushMsg( const message& msg )
 {
 	m_roomMsg.push( msg );
 }
