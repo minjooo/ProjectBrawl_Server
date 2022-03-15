@@ -24,6 +24,7 @@ public:
 public:
 	UxVoid CreateClientsSlot();
 	SOCKADDR_IN GetServerAddr();
+	UxBool IsAvailableId( const std::string& name );
 
 public:
 	UxVoid SendPacket( UxInt32 id, UxVoid* buff );

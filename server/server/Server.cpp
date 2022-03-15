@@ -286,6 +286,14 @@ SOCKADDR_IN Server::GetServerAddr()
 	return m_ServerAddr;
 }
 
+UxBool Server::IsAvailableId( const std::string& name )
+{
+	for ( auto&& c : m_clients )
+		if ( c->name == name )
+			return false;
+	return true;
+}
+
 UxVoid Server::CreateClientsSlot()
 {
 	std::cout << " Initializing g_clients\n";

@@ -11,8 +11,8 @@ constexpr UxInt32 noMsg = -1;
 
 constexpr UxInt32 maxBuffer = 256;
 constexpr UxInt32 maxPlayer = 4;
-constexpr UxInt32 maxRoom	= 50;
-constexpr UxInt32 maxClient = 5100;
+constexpr UxInt32 maxRoom	= 30;
+constexpr UxInt32 maxClient = 120;
 constexpr UxInt32 maxHeart	= 5;
 constexpr UxInt32 notInRoom = -1;
 
@@ -51,7 +51,7 @@ struct SOCKETINFO {
 	UxInt32 curr_packet_size {};
 
 	UxBool	isConnected { false };
-	std::string name;
+	std::string name { "" };
 	UxInt32 roomNum { notInRoom };
 };
 

@@ -11,7 +11,6 @@ public:
 
 public:
 	UxVoid UpdateRooms();
-
 	UxInt32 GetNextRoomCounter();
 	UxInt32 AddNewRoom( std::string name );
 	UxVoid DestroyRoom( UxInt32 roomNum );
@@ -22,4 +21,3 @@ public:
 private:
 	UxInt32 m_roomCounter;
 };
-

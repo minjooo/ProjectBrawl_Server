@@ -4,6 +4,8 @@
 #include "Global.h"
 #include "MyThread.h"
 #include "WorkerThread.h"
+#include "TimerThread.h"
+#include "RoomManagerThread.h"
 #include "ThreadHandler.h"
 
 
@@ -32,8 +34,13 @@ void ThreadHandler::CreateThreads()
 
 	// TimerThread 持失
 	std::cout << "Creating TimerThread.." << std::endl;
-	//AddThread( new TimerThread );
+	AddThread( new TimerThread );
 	std::cout << "TimerThread Created." << std::endl;
+
+	// RoomManagerThread 持失
+	std::cout << "Creating RoomManagerThread.." << std::endl;
+	AddThread( new RoomManagerThread );
+	std::cout << "RoomManagerThread Created." << std::endl;
 }
 
 void ThreadHandler::JoinThreads()

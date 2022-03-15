@@ -120,92 +120,69 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 	packet2msg.roomNum = Server::GetInstance()->m_clients[id]->roomNum;
 	packet2msg.buff = buf;
 
-	switch ( packet[1] )
+	if ( packet[1] == CS_LOGIN )
 	{
-	case CS_LOGIN:
+		csPacketLogin* loginPacket = reinterpret_cast< csPacketLogin* >( packet );
+		std::string str { loginPacket->id };
+		if ( Server::GetInstance()->IsAvailableId( str ) )
+		{
+			Server::GetInstance()->m_clients[id]->name = str;
+			Server::GetInstance()->SendPacketLoginOk( id );
+		}
+		else
+		{
+			Server::GetInstance()->SendPacketLoginDeny( id );
+		}
+	}
+	else if ( packet[1] == CS_JOIN_GAME )
 	{
+		if ( Server::GetInstance()->m_clients[id]->name.length() > 0 )
+			Server::GetInstance()->SendPacketJoinGameOk( id );
+		else
+			Server::GetInstance()->SendPacketJoinGameDeny( id );
+	}
+	else if ( packet[1] == CS_EXIT_GAME )
+	{
+		//Å¬¶ó²÷±è Ã³¸® ÇÊ¿ä
+	}
+	else if ( packet[1] == CS_ROOM_LIST )
+	{
+		PTC_Room rooms[5];
+		UxInt32 num = Server::GetInstance()->m_roomManager.m_rooms.size();
+		if ( num > 0 )
+		{
+			UxInt32 count { 0 };
+			for ( auto&& r : Server::GetInstance()->m_roomManager.m_rooms )
+			{
+				rooms[count].id = r.second->GetRoomNum();
+				rooms[count].participant = r.second->GetcurPlayerNum();
+				strcpy( rooms[count].name, r.second->GetRoomName().c_str() );
 
+				++count;
+				if ( count == 5 )
+				{
+					Server::GetInstance()->SendPacketRoomList( id, num, rooms );
+					count = 0;
+					ZeroMemory( &rooms, sizeof( rooms ) );
+				}
+			}
+			if ( count % 5 != 0 )
+			{
+				for ( int i = count % 5; i < 5; ++i ) 
+					rooms[i].id = -1;
+				Server::GetInstance()->SendPacketRoomList( id, num, rooms );
+			}
+		}
+		else
+		{
+			for ( auto&& r : rooms )
+				r.id = -1;
+			Server::GetInstance()->SendPacketRoomList( id, num, rooms );
+		}
 	}
-	break;
-	case CS_JOIN_GAME:
-	{
-
-	}
-	break;
-	case CS_EXIT_GAME:
-	{
-
-	}
-	break;
-	case CS_ROOM_LIST:
-	{
-
-	}
-	break;
-	case CS_MAKE_ROOM:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_JOIN_ROOM:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_SELECT_CHARACTER:
+	else
 	{
 		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_READY:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_UN_READY:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_LEAVE_ROOM:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_POSITION:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_ROTATE:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_ANIMATION:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_ATTACK:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_DEDUCT_HEART:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-	case CS_DIE:
-	{
-		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
-	}
-	break;
-
-	default:
-		std::cout << "[LOG] Invalid Packet Type Error!\n";
-		while ( true );
 	}
 }
 
@@ -217,6 +194,6 @@ UxVoid WorkerThread::DisconnectClient( int clientID, SOCKET client )
 	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
 
 	Server::GetInstance()->m_clients[clientID]->socket = nullptr;
-	//closesocket( client );
+	closesocket( client );
 	std::cout << "Client ID - " << clientID << " disconnected.\n";
 }

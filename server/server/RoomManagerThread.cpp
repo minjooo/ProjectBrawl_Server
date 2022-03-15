@@ -36,11 +36,11 @@ UxVoid RoomManagerThread::ProcThread()
 				std::string tmpRoomName { tmpPacket->name };
 				UxInt32 num = Server::GetInstance()->m_roomManager.AddNewRoom( tmpRoomName );
 				message tmpMsg = msg;
-				csPacketJoinRoom* p;
-				p->size = sizeof( csPacketJoinRoom );
-				p->type = CS_JOIN_ROOM;
-				p->roomNum = num;
-				tmpMsg.buff = p;
+				csPacketJoinRoom p;
+				p.size = sizeof( csPacketJoinRoom );
+				p.type = CS_JOIN_ROOM;
+				p.roomNum = num;
+				tmpMsg.buff = &p;
 				Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( tmpMsg );
 			}
 			else

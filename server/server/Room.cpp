@@ -155,6 +155,7 @@ UxVoid Room::Update()
 		}
 		break;
 		default:
+			std::cout << "\n\nInvalid Packet Type Error!\n\n";
 			break;
 		}
 	}
