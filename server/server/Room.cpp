@@ -57,20 +57,59 @@ UxVoid Room::Update()
 
 		switch ( packet[1] )
 		{
+		case CS_JOIN_ROOM:
+		{
+			csPacketJoinRoom* tmpPacket = reinterpret_cast< csPacketJoinRoom* >( packet );
+			UxBool res = EnterRoom( msg.id, msg.name );
+			if ( res )
+			{
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() )
+						Server::GetInstance()->SendPacketJoinRoomOk( p->GetId(), msg.id );
+			}
+			else
+			{
+				Server::GetInstance()->SendPacketJoinRoomDeny( msg.id );
+			}
+		}
+		break;
+		case CS_LEAVE_ROOM:
+		{
+			csPacketLeaveRoom* tmpPacket = reinterpret_cast< csPacketLeaveRoom* >( packet );
+			LeaveRoom( msg.id );
+			for ( auto&& p : m_players )
+				if ( !p->IsEmpty() )
+					Server::GetInstance()->SendPacketLeaveRoom( p->GetId(), msg.id );
+		}
+		break;
 		case CS_SELECT_CHARACTER:
 		{
 			csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
 			m_players[msg.id]->SetCharacter( tmpPacket->character );
+			for ( auto&& p : m_players )
+				if ( !p->IsEmpty() && p->GetId() != msg.id )
+					Server::GetInstance()->SendPacketSelectCharacter( p->GetId(), msg.id, tmpPacket->character );
 		}
 		break;
 		case CS_READY:
 		{
 			m_players[msg.id]->SetReady( true );
+			for ( auto&& p : m_players )
+				if ( !p->IsEmpty() && p->GetId() != msg.id )
+					Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
+			
+			//모두 준비됐으면 게임 시작
+			if ( IsGameStartAble() )
+				for ( auto&& p : m_players )
+					Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
 		}
 		break;
 		case CS_UN_READY:
 		{
 			m_players[msg.id]->SetReady( false );
+			for ( auto&& p : m_players )
+				if ( !p->IsEmpty() && p->GetId() != msg.id )
+					Server::GetInstance()->SendPacketUnReady( p->GetId(), msg.id );
 		}
 		break;
 		case CS_POSITION:
@@ -88,6 +127,9 @@ UxVoid Room::Update()
 		{
 			csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
 			m_players[msg.id]->SetAnim( tmpPacket->anim );
+			for ( auto&& p : m_players )
+				if ( !p->IsEmpty() && p->GetId() != msg.id )
+					Server::GetInstance()->SendPacketAnimation( p->GetId(), msg.id, tmpPacket->anim );
 		}
 		break;
 		case CS_ATTACK:
@@ -95,15 +137,21 @@ UxVoid Room::Update()
 			//나중에 추가 필요
 		}
 		break;
-		case CS_HEART_DECREAS:
+		case CS_DEDUCT_HEART:
 		{
 			m_players[msg.id]->DeductHeart();
+			for ( auto&& p : m_players )
+				if ( !p->IsEmpty() )
+					Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, p->GetHeartNum() );
 			//죽었나 봐야하나?
 		}
 		break;
 		case CS_DIE:
 		{
 			m_players[msg.id]->SetDie();
+			for ( auto&& p : m_players )
+				if ( !p->IsEmpty() && p->GetId() != msg.id )
+					Server::GetInstance()->SendPacketDie( p->GetId(), msg.id );
 		}
 		break;
 		default:
@@ -111,7 +159,11 @@ UxVoid Room::Update()
 		}
 	}
 
-	//send
+	//in game send (pos, rot, attack)
+	for ( auto&& p1 : m_players )
+		for ( auto&& p2 : m_players )
+			if ( !p1->IsEmpty() && !p2->IsEmpty() && p1 != p2 )
+				Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY() );
 }
 
 UxVoid Room::PushMsg( const message& msg )
@@ -129,6 +181,15 @@ UxBool Room::IsEmpty()
 UxBool Room::IsGameStarted()
 {
 	return m_isGameStarted;
+}
+
+UxBool Room::IsGameStartAble()
+{
+	for ( auto&& p : m_players )
+		if ( p->IsEmpty() )return false;
+	for ( auto&& p : m_players )
+		if ( !p->GetReady() )return false;
+	return true;
 }
 
 UxBool Room::EnterRoom( UxInt32 id, std::string name )

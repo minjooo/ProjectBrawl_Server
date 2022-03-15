@@ -1,6 +1,5 @@
 
 #include "Header.h"
-#include "Protocol.h"
 #include "ThreadHandler.h"
 #include "Socket.h"
 #include "SocketAddress.h"
@@ -167,7 +166,7 @@ UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list )//리스트 추가 필요
+UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list )
 {
 	scPacketRoomList packet;
 	packet.size = sizeof( packet );

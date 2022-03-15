@@ -192,7 +192,7 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
-	case CS_HEART_DECREAS:
+	case CS_DEDUCT_HEART:
 	{
 		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}

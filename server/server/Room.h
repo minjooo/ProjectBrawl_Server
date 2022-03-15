@@ -19,6 +19,7 @@ public:
 public:
 	UxVoid PushMsg( const message& msg );
 	UxBool IsEmpty();
+	UxBool IsGameStartAble();
 	UxBool IsGameStarted();
 
 	UxBool EnterRoom( UxInt32 id, std::string name );

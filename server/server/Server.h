@@ -1,6 +1,7 @@
 
 
 #pragma once
+#include "Protocol.h"
 #include "TypeDef.h"
 #include "Global.h"
 #include "Singleton.h"
@@ -36,7 +37,7 @@ public:
 	UxVoid SendPacketMakeRoomDeny( UxInt32 id );
 	UxVoid SendPacketJoinRoomOk( UxInt32 id, UxInt32 who );
 	UxVoid SendPacketJoinRoomDeny( UxInt32 id );
-	UxVoid SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list );//리스트 추가 필요
+	UxVoid SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list );
 	//game room
 	UxVoid SendPacketSelectCharacter( UxInt32 id, UxInt32 who, UxInt8 cha );
 	UxVoid SendPacketReady( UxInt32 id, UxInt32 who );
