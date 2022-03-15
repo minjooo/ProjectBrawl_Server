@@ -13,6 +13,7 @@ constexpr UxInt32 maxBuffer = 256;
 constexpr UxInt32 maxPlayer = 4;
 constexpr UxInt32 maxRoom	= 50;
 constexpr UxInt32 maxClient = 5100;
+constexpr UxInt32 maxHeart = 5;
 
 constexpr UxInt32 eventKey	= 10000;
 
@@ -49,6 +50,7 @@ struct SOCKETINFO {
 	UxInt32 curr_packet_size {};
 
 	UxBool	isConnected { false };
+	std::wstring name;
 };
 
 struct message {
