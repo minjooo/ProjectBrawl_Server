@@ -13,7 +13,7 @@ public:
 	UxVoid Initialize();
 	UxVoid Reset();
 	UxVoid Update();
-	UxVoid EnterRoom( UxInt32 id, std::wstring name );
+	UxVoid EnterRoom( UxInt32 id, std::string name );
 
 public:
 	UxBool IsEmpty();
@@ -29,7 +29,7 @@ public:
 private:
 	//m_clients의 key값과 동일
 	UxInt32 m_id;
-	std::wstring m_name;
+	std::string m_name;
 
 	UxInt32 m_heart;
 

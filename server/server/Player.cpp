@@ -17,7 +17,7 @@ Player::~Player()
 
 }
 
-UxVoid Player::EnterRoom( UxInt32 id, std::wstring name )
+UxVoid Player::EnterRoom( UxInt32 id, std::string name )
 {
 	m_isEmpty = false;
 	m_id = id;

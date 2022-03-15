@@ -1,8 +1,6 @@
 
 
 #include "Protocol.h"
-#include "Header.h"
-#include "Global.h"
 #include "Server.h"
 #include "WorkerThread.h"
 
@@ -24,14 +22,16 @@ UxVoid WorkerThread::ProcThread()
 		WSAOVERLAPPED* p_over;
 
 		BOOL bSuccessful = GetQueuedCompletionStatus( Server::GetInstance()->m_iocp, &num_byte, ( PULONG_PTR )p_key, &p_over, INFINITE );
-		if ( !bSuccessful ) {
+		if ( !bSuccessful ) 
+		{
 			UxInt32 err_no = GetLastError();
 			std::cout << "Error!!" << std::endl;
 		}
 
 		SOCKET clientSock;
 		if ( key == eventKey );
-		if ( Server::GetInstance()->m_clients[key]->socket == nullptr ) {
+		if ( Server::GetInstance()->m_clients[key]->socket == nullptr ) 
+		{
 			std::cout << "nullptr Error!!" << std::endl;
 			continue;
 		}
@@ -40,7 +40,7 @@ UxVoid WorkerThread::ProcThread()
 
 		if ( num_byte == 0 )
 		{
-			// 클라이언트와 연결끊김.
+			// 클라이언트와 연결끊김 처리 필요
 			DisconnectClient( key, clientSock );
 			continue;
 		}
@@ -63,14 +63,7 @@ UxVoid WorkerThread::ProcThread()
 					unsigned char packet[maxBuffer];
 					memcpy( packet, Server::GetInstance()->m_clients[key]->packet_buf, pr_size );
 					memcpy( packet + pr_size, buf, psize - pr_size );
-					msg = ProcPacket( key, packet );
-
-					/*방에있음 처리 여기서?
-					if ( msg.type != NO_MSG ) {
-						int room_ID = SHARED_RESOURCE::g_clients[key]->room_id;
-						SHARED_RESOURCE::g_rooms[room_ID]->PushMsg( msg );
-					}
-					*/
+					ProcPacket( key, packet );
 
 					num_byte -= psize - pr_size;
 					buf += psize - pr_size;
@@ -104,7 +97,6 @@ UxVoid WorkerThread::ProcThread()
 		{
 			delete over_ex;
 		}
-
 		else
 		{
 			std::cout << "[LOG] Unknown Event Type!!\n";
@@ -118,18 +110,18 @@ void WorkerThread::JoinThread()
 }
 
 
-message WorkerThread::ProcPacket( int id, void* buf )
+UxVoid WorkerThread::ProcPacket( int id, void* buf )
 {
 	char* packet = reinterpret_cast< char* >( buf );
 	message packet2msg;
 	memset( &packet2msg, 0x00, sizeof( message ) );
 	packet2msg.id = id;
-	packet2msg.type = noMsg;
+	packet2msg.name = Server::GetInstance()->m_clients[id]->name;
+	packet2msg.roomNum = Server::GetInstance()->m_clients[id]->roomNum;
+	packet2msg.buff = buf;
 
 	switch ( packet[1] )
 	{
-	// 패킷 종류따라 처리
-
 	case CS_LOGIN:
 	{
 
@@ -145,69 +137,69 @@ message WorkerThread::ProcPacket( int id, void* buf )
 
 	}
 	break;
-	case CS_MAKE_ROOM:
-	{
-
-	}
-	break;
-	case CS_JOIN_ROOM:
-	{
-
-	}
-	break;
 	case CS_ROOM_LIST:
 	{
 
 	}
 	break;
+	case CS_MAKE_ROOM:
+	{
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
+	}
+	break;
+	case CS_JOIN_ROOM:
+	{
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
+	}
+	break;
 	case CS_SELECT_CHARACTER:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_READY:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_UN_READY:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_LEAVE_ROOM:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_POSITION:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_ROTATE:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_ANIMATION:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_ATTACK:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_HEART_DECREAS:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 	case CS_DIE:
 	{
-
+		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 	break;
 
@@ -215,7 +207,6 @@ message WorkerThread::ProcPacket( int id, void* buf )
 		std::cout << "[LOG] Invalid Packet Type Error!\n";
 		while ( true );
 	}
-	return packet2msg;
 }
 
 UxVoid WorkerThread::DisconnectClient( int clientID, SOCKET client )

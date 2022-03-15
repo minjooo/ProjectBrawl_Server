@@ -3,7 +3,8 @@
 #pragma once
 #include "MyThread.h"
 
-class TimerThread final : public MyThread
+
+class RoomManagerThread : public MyThread
 {
 public:
 	UxVoid InitThread() override;

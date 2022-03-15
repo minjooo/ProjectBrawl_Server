@@ -1,8 +1,9 @@
 
 
+#include "Protocol.h"
 #include "Header.h"
-#include "Global.h"
 #include "TypeDef.h"
+#include "Server.h"
 #include "Room.h"
 
 
@@ -11,7 +12,7 @@ Room::Room( UxInt32 room_num )
 	Initialize( room_num );
 }
 
-Room::Room( UxInt32 room_num, std::wstring room_name )
+Room::Room( UxInt32 room_num, std::string room_name )
 {
 	Initialize( room_num );
 	m_roomName = room_name;
@@ -46,6 +47,70 @@ UxVoid Room::Update()
 	if ( this == nullptr )
 		return;
 	//update 필요
+	//msgQueue내용 반영
+	while ( !m_roomMsg.empty() )
+	{
+		char* msg = m_roomMsg.front();
+		m_roomMsg.pop();
+
+		switch ( msg[1] )
+		{
+		case CS_SELECT_CHARACTER:
+		{
+			//다 각각 반영하기
+		}
+		break;
+		case CS_READY:
+		{
+
+		}
+		break;
+		case CS_UN_READY:
+		{
+
+		}
+		break;
+		case CS_POSITION:
+		{
+
+		}
+		break;
+		case CS_ROTATE:
+		{
+
+		}
+		break;
+		case CS_ANIMATION:
+		{
+
+		}
+		break;
+		case CS_ATTACK:
+		{
+
+		}
+		break;
+		case CS_HEART_DECREAS:
+		{
+
+		}
+		break;
+		case CS_DIE:
+		{
+
+		}
+		break;
+		default:
+			break;
+		}
+	}
+
+	//send
+}
+
+UxVoid Room::PushMsg( UxInt8* msg)
+{
+	m_roomMsg.push( msg );
 }
 
 UxBool Room::IsEmpty()
@@ -60,7 +125,7 @@ UxBool Room::IsGameStarted()
 	return m_isGameStarted;
 }
 
-UxBool Room::EnterRoom( UxInt32 id, std::wstring name )
+UxBool Room::EnterRoom( UxInt32 id, std::string name )
 {
 	if ( m_curPlayerNum >= maxPlayer )
 		return false;
@@ -72,7 +137,8 @@ UxBool Room::EnterRoom( UxInt32 id, std::wstring name )
 		{
 			player->EnterRoom( id, name );
 			++m_curPlayerNum;
-			//방번호 기억 필요 어디에..?
+
+			Server::GetInstance()->m_clients[id]->roomNum = m_roomNum;
 			//들어왔다고 알라기 필요
 			return true;
 		}
@@ -90,7 +156,8 @@ UxVoid Room::LeaveRoom( UxInt32 id )
 		{
 			player->Reset();
 			--m_curPlayerNum;
-			//방번호 기억 필요 어디에..?
+
+			Server::GetInstance()->m_clients[id]->roomNum = notInRoom;
 			//나갔다고 알라기 필요
 			break;
 		}
@@ -111,7 +178,7 @@ UxVoid Room::GameOver( UxInt32 winner )
 	//모든 플레이어에게 위너 알려주기
 }
 
-std::wstring Room::GetRoomName()
+std::string Room::GetRoomName()
 {
 	return m_roomName;
 }

@@ -5,13 +5,13 @@
 #include "Server.h"
 
 
-void TimerThread::InitThread()
+UxVoid TimerThread::InitThread()
 {
 	mythread = std::thread( [&] () {TimerThread::ProcThread(); } );
 }
 
 
-void TimerThread::ProcThread()
+UxVoid TimerThread::ProcThread()
 {
 	while ( true )
 	{
@@ -46,7 +46,7 @@ void TimerThread::ProcThread()
 	}
 }
 
-void TimerThread::JoinThread()
+UxVoid TimerThread::JoinThread()
 {
 	mythread.join();
 }

@@ -5,6 +5,7 @@
 #include "Global.h"
 #include "Singleton.h"
 #include "SocketUtil.h"
+#include "RoomManager.h"
 
 
 class ThreadHandler;
@@ -33,12 +34,16 @@ public:
 
 	//락프리 필요..
 	std::priority_queue<EVENT> m_timerQueue;
+	std::queue<message> m_roomMsgQueue;
+
+	RoomManager				m_roomManager;
 
 private:
 	ThreadHandler*			m_ThreadHandler;
 
-	std::shared_ptr<Socket> m_listenSocket;
 	SocketUtil				m_sockUtil;
+
+	std::shared_ptr<Socket> m_listenSocket;
 	SOCKADDR_IN				m_ServerAddr {};
 };
 

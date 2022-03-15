@@ -12,7 +12,7 @@ public:
 	UxVoid ProcThread() override;
 	UxVoid JoinThread() override;
 
-	message ProcPacket( int id, void* buff );
+	UxVoid ProcPacket( int id, void* buff );
 
 	UxVoid DisconnectClient( int clientID, SOCKET client );
 
