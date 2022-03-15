@@ -38,16 +38,13 @@ void Room::Initialize( UxInt32 room_num )
 
 	for ( auto& player : m_players )
 		player = new Player();
-
-	//update 호출 시작 필요?
 }
 
 UxVoid Room::Update()
 {
 	if ( this == nullptr )
 		return;
-	//update 필요
-	//msgQueue내용 반영
+
 	while ( !m_roomMsg.empty() )
 	{
 		message msg = m_roomMsg.front();
@@ -198,7 +195,6 @@ UxBool Room::EnterRoom( UxInt32 id, std::string name )
 	if ( m_curPlayerNum >= maxPlayer )
 		return false;
 
-	//플레이어 추가 및 방 추가 처리 필요
 	for ( auto&& player : m_players )
 	{
 		if ( player->IsEmpty() )
@@ -207,7 +203,6 @@ UxBool Room::EnterRoom( UxInt32 id, std::string name )
 			++m_curPlayerNum;
 
 			Server::GetInstance()->m_clients[id]->roomNum = m_roomNum;
-			//들어왔다고 알라기 필요
 			return true;
 		}
 	}
@@ -217,7 +212,6 @@ UxBool Room::EnterRoom( UxInt32 id, std::string name )
 
 UxVoid Room::LeaveRoom( UxInt32 id )
 {
-	//방 나감 처리 필요
 	for ( auto&& player : m_players )
 	{
 		if ( player->GetId() == id )
@@ -226,7 +220,6 @@ UxVoid Room::LeaveRoom( UxInt32 id )
 			--m_curPlayerNum;
 
 			Server::GetInstance()->m_clients[id]->roomNum = notInRoom;
-			//나갔다고 알라기 필요
 			break;
 		}
 	}

@@ -11,6 +11,10 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <tbb/parallel_for.h>
+#include <tbb/concurrent_queue.h>
+#include <tbb/concurrent_priority_queue.h>
+//#include <tbb/concurrent_map.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 

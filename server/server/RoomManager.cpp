@@ -7,7 +7,7 @@
 
 RoomManager::RoomManager()
 {
-
+	m_roomCounter = 0;
 }
 
 RoomManager::~RoomManager()

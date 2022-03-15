@@ -18,8 +18,6 @@ Server::~Server()
 
 UxVoid Server::Initialize()
 {
-	//room초기화 필요
-
 	//client 생성
 	CreateClientsSlot();
 

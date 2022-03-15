@@ -19,14 +19,16 @@ UxVoid RoomManagerThread::ProcThread()
 		{
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 		}
-		std::queue<message> copiedQ = Server::GetInstance()->m_roomMsgQueue;
-		while ( !Server::GetInstance()->m_roomMsgQueue.empty() )
-			Server::GetInstance()->m_roomMsgQueue.pop();
+		//std::queue<message> copiedQ = Server::GetInstance()->m_roomMsgQueue;
+		//while ( !Server::GetInstance()->m_roomMsgQueue.empty() )
+		//	Server::GetInstance()->m_roomMsgQueue.pop();
 
-		while ( !copiedQ.empty() )
+		while ( !Server::GetInstance()->m_roomMsgQueue.empty() )
 		{
-			const message& msg = copiedQ.front();
-			copiedQ.pop();
+			message msg;
+			Server::GetInstance()->m_roomMsgQueue.try_pop( msg );
+			//= copiedQ.front();
+			//copiedQ.pop();
 
 			char* packet = reinterpret_cast< char* >( msg.buff );
 

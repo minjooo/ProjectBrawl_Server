@@ -59,8 +59,10 @@ public:
 	std::array<SOCKETINFO*, maxClient> m_clients;
 
 	//락프리 필요..
-	std::priority_queue<EVENT> m_timerQueue;
-	std::queue<message> m_roomMsgQueue;
+	tbb::concurrent_priority_queue<EVENT> m_timerQueue;
+	//std::priority_queue<EVENT> m_timerQueue;
+	tbb::concurrent_queue<message> m_roomMsgQueue;
+	//std::queue<message> m_roomMsgQueue;
 
 	RoomManager				m_roomManager;
 

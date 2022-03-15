@@ -59,7 +59,6 @@ UxVoid WorkerThread::ProcThread()
 				if ( 0 == psize ) psize = ( BYTE )buf[0];
 				if ( num_byte + pr_size >= psize )
 				{
-					// 지금 패킷 완성 가능
 					unsigned char packet[maxBuffer];
 					memcpy( packet, Server::GetInstance()->m_clients[key]->packet_buf, pr_size );
 					memcpy( packet + pr_size, buf, psize - pr_size );
@@ -156,7 +155,7 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 			{
 				rooms[count].id = r.second->GetRoomNum();
 				rooms[count].participant = r.second->GetcurPlayerNum();
-				strcpy( rooms[count].name, r.second->GetRoomName().c_str() );
+				strcpy_s( rooms[count].name, r.second->GetRoomName().c_str() );
 
 				++count;
 				if ( count == 5 )

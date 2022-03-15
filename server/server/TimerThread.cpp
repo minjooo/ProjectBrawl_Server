@@ -20,14 +20,16 @@ UxVoid TimerThread::ProcThread()
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 		}
 
-		const EVENT& ev = Server::GetInstance()->m_timerQueue.top();
+		EVENT ev;
+		Server::GetInstance()->m_timerQueue.try_pop( ev );
+		//const EVENT& ev = Server::GetInstance()->m_timerQueue.top();
 		if ( std::chrono::high_resolution_clock::now() < ev.wakeup_time )
 		{
 			std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 			continue;
 		}
 		EVENT proc_ev = ev;
-		Server::GetInstance()->m_timerQueue.pop();
+		//Server::GetInstance()->m_timerQueue.pop();
 
 		OVER_EX* over_ex = new OVER_EX;
 
