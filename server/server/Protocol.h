@@ -27,6 +27,7 @@
 #define SC_MAKE_ROOM_DENY	11
 #define SC_JOIN_ROOM_OK		12
 #define SC_JOIN_ROOM_DENY	13
+#define SC_ROOM_LIST		14
 
 ////캐릭터 선택
 #define CHARACTER_NONE		0
@@ -172,12 +173,24 @@ struct scPacketJoinRoomDeny
 	char type;
 };
 
+struct PTC_Room
+{
+	char id;
+	char name[10];
+	char participant;
+};
+
 struct scPacketRoomList
 {
 	char size;
 	char type;
-	//리스트 추가 필요
+
+	int totalNum;
+	PTC_Room room_list[5];
 };
+//totalNum에 총 갯수를 보냅니다
+//항상 5개를 보내지만 예를들어 3개만 있는경우 나머지의 id는 -1이 들갑니다
+//예를 들어 totalNum이 8이 오면 5개/3개 총 두번 보낼 예정입니다
 
 //======================== GameRoom ==========================
 struct csPacketSelectCharacter

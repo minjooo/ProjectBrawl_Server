@@ -167,9 +167,14 @@ UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRoomList( UxInt32 id )//리스트 추가 필요
+UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list )//리스트 추가 필요
 {
-
+	scPacketRoomList packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_ROOM_LIST;
+	packet.totalNum = totalNum;
+	memcpy( &packet.room_list, room_list, sizeof( packet.room_list ) );
+	SendPacket( id, &packet );
 }
 
 //game room
