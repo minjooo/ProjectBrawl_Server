@@ -85,6 +85,198 @@ void Server::Run()
 	}
 }
 
+UxVoid Server::SendPacket( UxInt32 id, UxVoid* buff )
+{
+	UxInt8* packet = reinterpret_cast< UxInt8* >( buff );
+	UxInt8 packet_size = ( UxInt8 )packet[0];
+	OVER_EX* send_over = new OVER_EX;
+	memset( send_over, 0, sizeof( OVER_EX ) );
+	send_over->ev_type = EEventType::SEND;
+	memcpy( send_over->net_buf, packet, packet_size );
+	send_over->wsabuf[0].len = packet_size;
+	send_over->wsabuf[0].buf = send_over->net_buf;
+
+	m_clients[id]->socket->WSASend( send_over->wsabuf, 1, 0, 0, &send_over->over );
+}
+
+//main
+UxVoid Server::SendPacketLoginOk( UxInt32 id )
+{
+	scPacketLoginOk packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_LOGIN_OK;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketLoginDeny( UxInt32 id )
+{
+	scPacketLoginDeny packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_LOGIN_DENY;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketJoinGameOk( UxInt32 id )
+{
+	scPacketJoinGameOk packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_JOIN_GAME_OK;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketJoinGameDeny( UxInt32 id )
+{
+	scPacketJoinGameDeny packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_JOIN_GAME_DENY;
+	SendPacket( id, &packet );
+}
+
+//lobby
+UxVoid Server::SendPacketMakeRoomOk( UxInt32 id, UxInt32 roomNum )
+{
+	scPacketMakeRoomOk packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_MAKE_ROOM_OK;
+	packet.roomNum = roomNum;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketMakeRoomDeny( UxInt32 id )
+{
+	scPacketMakeRoomDeny packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_MAKE_ROOM_DENY;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, UxInt32 who )
+{
+	scPacketJoinRoomOk packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_JOIN_ROOM_OK;
+	packet.id = who;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
+{
+	scPacketJoinRoomDeny packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_JOIN_ROOM_DENY;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketRoomList( UxInt32 id )//리스트 추가 필요
+{
+
+}
+
+//game room
+UxVoid Server::SendPacketSelectCharacter( UxInt32 id, UxInt32 who, UxInt8 cha )
+{
+	scPacketSelectCharacter packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_SELECT_CHARACTER;
+	packet.id = who;
+	packet.character = cha;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketReady( UxInt32 id, UxInt32 who )
+{
+	scPacketReady packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_READY;
+	packet.id = who;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketUnReady( UxInt32 id, UxInt32 who )
+{
+	scPacketUnReady packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_UN_READY;
+	packet.id = who;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketLeaveRoom( UxInt32 id, UxInt32 who )
+{
+	scPacketLeaveRoom packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_LEAVE_ROOM;
+	packet.id = who;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketGameStart( UxInt32 id )
+{
+	scPacketGameStart packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_GAME_START;
+	SendPacket( id, &packet );
+}
+
+//in game
+UxVoid Server::SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle y )
+{
+	scPacketPosition packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_POSITION;
+	packet.id = who;
+	packet.x = x;
+	packet.y = y;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketRotation( UxInt32 id )//일단 보류
+{
+
+}
+
+UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim )
+{
+	scPacketAnimation packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_ANIMATOIN;
+	packet.id = who;
+	packet.anim = anim;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketHit( UxInt32 id )//일단 보류
+{
+
+}
+
+UxVoid Server::SendPacketDeductHeart( UxInt32 id, UxInt32 who, UxInt32 num )
+{
+	scPacketDeductHeart packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_DEDUCT_HEART;
+	packet.id = who;
+	packet.num = num;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketDie( UxInt32 id, UxInt32 who )
+{
+	scPacketDie packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_DIE;
+	packet.id = who;
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketGameOver( UxInt32 id )
+{
+	scGameOver packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_GAME_OVER;
+	SendPacket( id, &packet );
+}
+
 SOCKADDR_IN Server::GetServerAddr()
 {
 	return m_ServerAddr;

@@ -60,14 +60,14 @@
 #define CS_ROTATE			31 //수정 여부 있음
 #define CS_ANIMATION		32
 #define CS_ATTACK			33
-#define CS_HEART_DECREAS	34 //떨어져서 피 까였을 때
+#define CS_DEDUCT_HEART		34 //떨어져서 피 까였을 때
 #define CS_DIE				35 //하트 하나도 없음
 //server -> client
 #define SC_POSITION			30
 #define SC_ROTATE			31
 #define SC_ANIMATOIN		32
 #define SC_HIT				33 //스킬 맞음
-#define SC_HEART_DECREAS	35
+#define SC_DEDUCT_HEART		35
 #define SC_DIE				36
 #define SC_GAME_OVER		37
 
@@ -109,13 +109,13 @@ struct scPacketLoginDeny
 	char type;
 };
 
-struct scPacketGameOk
+struct scPacketJoinGameOk
 {
 	char size;
 	char type;
 };
 
-struct scPacketGameDeny
+struct scPacketJoinGameDeny
 {
 	char size;
 	char type;
@@ -142,7 +142,6 @@ struct csPacketRoomList
 {
 	char size;
 	char type;
-	//리스트 추가 필요
 };
 
 struct scPacketMakeRoomOk
@@ -171,6 +170,13 @@ struct scPacketJoinRoomDeny
 {
 	char size;
 	char type;
+};
+
+struct scPacketRoomList
+{
+	char size;
+	char type;
+	//리스트 추가 필요
 };
 
 //======================== GameRoom ==========================
@@ -319,7 +325,7 @@ struct scPacketHit
 	//일단 보류
 };
 
-struct scPacketHeartDecrease
+struct scPacketDeductHeart
 {
 	char size;
 	char type;
