@@ -86,7 +86,7 @@ UxVoid Room::Update()
 		{
 			std::cout << "[" << msg.id << "] recv select character packet" << std::endl;
 			csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
-			m_players[msg.id]->SetCharacter( tmpPacket->character );
+			m_players[m_id2index[msg.id]]->SetCharacter( tmpPacket->character );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
 					Server::GetInstance()->SendPacketSelectCharacter( p->GetId(), msg.id, tmpPacket->character );
@@ -95,7 +95,7 @@ UxVoid Room::Update()
 		case CS_READY:
 		{
 			std::cout << "[" << msg.id << "] recv ready packet" << std::endl;
-			m_players[msg.id]->SetReady( true );
+			m_players[m_id2index[msg.id]]->SetReady( true );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
 					Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
@@ -106,14 +106,14 @@ UxVoid Room::Update()
 				EVENT ev { eventKey,m_roomNum, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
 				Server::GetInstance()->m_timerQueue.push( ev );
 				for ( auto&& p : m_players )
-					Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
+					Server::GetInstance()->SendPacketGameStart( p->GetId() );
 			}
 		}
 		break;
 		case CS_UN_READY:
 		{
 			std::cout << "[" << msg.id << "] recv unready packet" << std::endl;
-			m_players[msg.id]->SetReady( false );
+			m_players[m_id2index[msg.id]]->SetReady( false );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
 					Server::GetInstance()->SendPacketUnReady( p->GetId(), msg.id );
@@ -123,7 +123,7 @@ UxVoid Room::Update()
 		{
 			std::cout << ".";
 			csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
-			m_players[msg.id]->SetPos( tmpPacket->x, tmpPacket->y );
+			m_players[m_id2index[msg.id]]->SetPos( tmpPacket->x, tmpPacket->y );
 		}
 		break;
 		case CS_ROTATE:
@@ -134,7 +134,7 @@ UxVoid Room::Update()
 		case CS_ANIMATION:
 		{
 			csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
-			m_players[msg.id]->SetAnim( tmpPacket->anim );
+			m_players[m_id2index[msg.id]]->SetAnim( tmpPacket->anim );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
 					Server::GetInstance()->SendPacketAnimation( p->GetId(), msg.id, tmpPacket->anim );
@@ -148,7 +148,7 @@ UxVoid Room::Update()
 		case CS_DEDUCT_HEART:
 		{
 			std::cout << "[" << msg.id << "] recv deduct heart packet" << std::endl;
-			m_players[msg.id]->DeductHeart();
+			m_players[m_id2index[msg.id]]->DeductHeart();
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() )
 					Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, p->GetHeartNum() );
@@ -158,7 +158,7 @@ UxVoid Room::Update()
 		case CS_DIE:
 		{
 			std::cout << "[" << msg.id << "] recv die packet" << std::endl;
-			m_players[msg.id]->SetDie();
+			m_players[m_id2index[msg.id]]->SetDie();
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
 					Server::GetInstance()->SendPacketDie( p->GetId(), msg.id );
@@ -226,11 +226,12 @@ UxBool Room::EnterRoom( UxInt32 id, std::string name )
 	if ( m_curPlayerNum >= maxPlayer )
 		return false;
 
-	for ( auto&& player : m_players )
+	for ( int i = 0; i < maxPlayer; ++i )
 	{
-		if ( player->IsEmpty() )
+		if ( m_players[i]->IsEmpty() )
 		{
-			player->EnterRoom( id, name );
+			m_players[i]->EnterRoom( id, name );
+			m_id2index.insert( std::make_pair( id, i ) );
 			++m_curPlayerNum;
 
 			Server::GetInstance()->m_clients[id]->roomNum = m_roomNum;
@@ -247,6 +248,7 @@ UxVoid Room::LeaveRoom( UxInt32 id )
 	{
 		if ( player->GetId() == id )
 		{
+			m_id2index.erase( id );
 			player->Reset();
 			--m_curPlayerNum;
 

@@ -33,13 +33,19 @@ UxVoid RoomManagerThread::ProcThread()
 					csPacketMakeRoom* tmpPacket = reinterpret_cast< csPacketMakeRoom* >( packet );
 					std::string tmpRoomName { tmpPacket->name };
 					UxInt32 num = Server::GetInstance()->m_roomManager.AddNewRoom( tmpRoomName );
+					Server::GetInstance()->SendPacketMakeRoomOk( msg.id, num );
 					message tmpMsg = msg;
 					csPacketJoinRoom p;
 					p.size = sizeof( csPacketJoinRoom );
 					p.type = CS_JOIN_ROOM;
 					p.roomNum = num;
 					tmpMsg.buff = &p;
-					Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( tmpMsg );
+					Server::GetInstance()->m_roomManager.m_rooms[num]->PushMsg( tmpMsg );
+				}
+				else if ( packet[1] == CS_JOIN_ROOM )
+				{
+					csPacketJoinRoom* tmpPacket = reinterpret_cast< csPacketJoinRoom* >( packet );
+					Server::GetInstance()->m_roomManager.m_rooms[tmpPacket->roomNum]->PushMsg( msg );
 				}
 				else
 				{

@@ -207,11 +207,12 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 UxVoid WorkerThread::DisconnectClient( int clientID, SOCKET client )
 {
 	//방 퇴장 처리
-
-	// 클라이언트와 연결 종료. 락프리 필요....
-	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
-
-	Server::GetInstance()->m_clients[clientID]->socket = nullptr;
 	closesocket( client );
+	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
+	Server::GetInstance()->m_clients[clientID]->socket = nullptr;
+	Server::GetInstance()->m_clients[clientID]->roomNum = notInRoom;
+	Server::GetInstance()->m_clients[clientID]->name = "";
+	Server::GetInstance()->m_clients[clientID]->isConnected = false;
+
 	std::cout << "Client ID - " << clientID << " disconnected.\n";
 }

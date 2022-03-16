@@ -72,7 +72,6 @@ void Server::Run()
 		new_player->isConnected = true;
 
 		m_clients[user_id] = new_player;
-		std::cout << user_id << " accept!" << std::endl;
 
 		CreateIoCompletionPort( reinterpret_cast< HANDLE >( clientSocket->GetSocket() ), m_iocp, user_id, 0 );
 
@@ -99,6 +98,7 @@ UxVoid Server::SendPacket( UxInt32 id, UxVoid* buff )
 //main
 UxVoid Server::SendPacketLoginOk( UxInt32 id )
 {
+	std::cout << "[" << id << "] send login ok!\n";
 	scPacketLoginOk packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_LOGIN_OK;
@@ -107,6 +107,7 @@ UxVoid Server::SendPacketLoginOk( UxInt32 id )
 
 UxVoid Server::SendPacketLoginDeny( UxInt32 id )
 {
+	std::cout << "[" << id << "] send login deny!\n";
 	scPacketLoginDeny packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_LOGIN_DENY;
@@ -115,6 +116,7 @@ UxVoid Server::SendPacketLoginDeny( UxInt32 id )
 
 UxVoid Server::SendPacketJoinGameOk( UxInt32 id )
 {
+	std::cout << "[" << id << "] send join game ok!\n";
 	scPacketJoinGameOk packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_JOIN_GAME_OK;
@@ -123,6 +125,7 @@ UxVoid Server::SendPacketJoinGameOk( UxInt32 id )
 
 UxVoid Server::SendPacketJoinGameDeny( UxInt32 id )
 {
+	std::cout << "[" << id << "] send join game deny!\n";
 	scPacketJoinGameDeny packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_JOIN_GAME_DENY;
@@ -132,6 +135,7 @@ UxVoid Server::SendPacketJoinGameDeny( UxInt32 id )
 //lobby
 UxVoid Server::SendPacketMakeRoomOk( UxInt32 id, UxInt32 roomNum )
 {
+	std::cout << "[" << id << "] send make room ok!\n";
 	scPacketMakeRoomOk packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_MAKE_ROOM_OK;
@@ -141,6 +145,7 @@ UxVoid Server::SendPacketMakeRoomOk( UxInt32 id, UxInt32 roomNum )
 
 UxVoid Server::SendPacketMakeRoomDeny( UxInt32 id )
 {
+	std::cout << "[" << id << "] send make room deny!\n";
 	scPacketMakeRoomDeny packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_MAKE_ROOM_DENY;
@@ -149,6 +154,7 @@ UxVoid Server::SendPacketMakeRoomDeny( UxInt32 id )
 
 UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, UxInt32 who )
 {
+	std::cout << "[" << id << "] send join room ok!\n";
 	scPacketJoinRoomOk packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_JOIN_ROOM_OK;
@@ -158,6 +164,7 @@ UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, UxInt32 who )
 
 UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
 {
+	std::cout << "[" << id << "] send join room deny!\n";
 	scPacketJoinRoomDeny packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_JOIN_ROOM_DENY;
@@ -166,6 +173,7 @@ UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
 
 UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list )
 {
+	std::cout << "[" << id << "] send room list!\n";
 	scPacketRoomList packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_ROOM_LIST;
@@ -177,6 +185,7 @@ UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_
 //game room
 UxVoid Server::SendPacketSelectCharacter( UxInt32 id, UxInt32 who, UxInt8 cha )
 {
+	std::cout << "[" << id << "] send select character!\n";
 	scPacketSelectCharacter packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_SELECT_CHARACTER;
@@ -187,6 +196,7 @@ UxVoid Server::SendPacketSelectCharacter( UxInt32 id, UxInt32 who, UxInt8 cha )
 
 UxVoid Server::SendPacketReady( UxInt32 id, UxInt32 who )
 {
+	std::cout << "[" << id << "] send ready!\n";
 	scPacketReady packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_READY;
@@ -196,6 +206,7 @@ UxVoid Server::SendPacketReady( UxInt32 id, UxInt32 who )
 
 UxVoid Server::SendPacketUnReady( UxInt32 id, UxInt32 who )
 {
+	std::cout << "[" << id << "] send unready!\n";
 	scPacketUnReady packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_UN_READY;
@@ -205,6 +216,7 @@ UxVoid Server::SendPacketUnReady( UxInt32 id, UxInt32 who )
 
 UxVoid Server::SendPacketLeaveRoom( UxInt32 id, UxInt32 who )
 {
+	std::cout << "[" << id << "] send leave room!\n";
 	scPacketLeaveRoom packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_LEAVE_ROOM;
@@ -214,6 +226,7 @@ UxVoid Server::SendPacketLeaveRoom( UxInt32 id, UxInt32 who )
 
 UxVoid Server::SendPacketGameStart( UxInt32 id )
 {
+	std::cout << "[" << id << "] send game start!\n";
 	scPacketGameStart packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_GAME_START;
@@ -239,6 +252,7 @@ UxVoid Server::SendPacketRotation( UxInt32 id )//일단 보류
 
 UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim )
 {
+	std::cout << "[" << id << "] send animation!\n";
 	scPacketAnimation packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_ANIMATOIN;
@@ -254,6 +268,7 @@ UxVoid Server::SendPacketHit( UxInt32 id )//일단 보류
 
 UxVoid Server::SendPacketDeductHeart( UxInt32 id, UxInt32 who, UxInt32 num )
 {
+	std::cout << "[" << id << "] send deduct heart!\n";
 	scPacketDeductHeart packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_DEDUCT_HEART;
@@ -264,6 +279,7 @@ UxVoid Server::SendPacketDeductHeart( UxInt32 id, UxInt32 who, UxInt32 num )
 
 UxVoid Server::SendPacketDie( UxInt32 id, UxInt32 who )
 {
+	std::cout << "[" << id << "] send die!\n";
 	scPacketDie packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_DIE;
@@ -273,6 +289,7 @@ UxVoid Server::SendPacketDie( UxInt32 id, UxInt32 who )
 
 UxVoid Server::SendPacketGameOver( UxInt32 id, PTC_Winner* winner )
 {
+	std::cout << "[" << id << "] send game over!\n";
 	scGameOver packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_GAME_OVER;
@@ -282,6 +299,7 @@ UxVoid Server::SendPacketGameOver( UxInt32 id, PTC_Winner* winner )
 
 UxVoid Server::SendPacketLeftTime( UxInt32 id, UxUInt8 left_time )
 {
+	std::cout << "[" << id << "] send tick!\n";
 	scLeftTime packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_LEFT_TIME;
@@ -298,7 +316,10 @@ UxBool Server::IsAvailableId( const std::string& name )
 {
 	for ( auto&& c : m_clients )
 		if ( c->name == name )
+		{
+			std::cout <<"이름 이미 있음"<< c->name << ", " << name << std::endl;
 			return false;
+		}
 	return true;
 }
 
