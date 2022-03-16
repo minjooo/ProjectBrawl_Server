@@ -8,15 +8,17 @@
 constexpr size_t maxWorkerThread = 2;
 
 constexpr UxInt32 noMsg = -1;
+constexpr UxInt32 eventKey	= 10000;
 
 constexpr UxInt32 maxBuffer = 256;
-constexpr UxInt32 maxPlayer = 4;
+
+//¹æ ÀÎ¿ø
+constexpr UxInt32 maxPlayer = 2;
 constexpr UxInt32 maxRoom	= 30;
 constexpr UxInt32 maxClient = 120;
 constexpr UxInt32 maxHeart	= 5;
 constexpr UxInt32 notInRoom = -1;
-
-constexpr UxInt32 eventKey	= 10000;
+constexpr UxUInt8 playTime	= 180 + 1;
 
 enum class EEventType
 {
@@ -29,7 +31,8 @@ struct EVENT {
 	UxInt32 target;
 	std::chrono::high_resolution_clock::time_point wakeup_time;
 	EEventType event_type;
-	constexpr UxBool operator<( const EVENT& rhs ) const {
+	constexpr UxBool operator<( const EVENT& rhs ) const 
+	{
 		return wakeup_time > rhs.wakeup_time;
 	}
 };

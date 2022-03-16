@@ -49,7 +49,7 @@ UxVoid Player::Reset()
 	m_character = CHARACTER_NONE;
 	m_animation = ANIM_IDLE;
 
-	m_id = -1;
+	//m_id = -1;
 	m_name.clear();
 }
 

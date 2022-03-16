@@ -35,6 +35,7 @@ void Room::Initialize( UxInt32 room_num )
 	m_roomNum = room_num;
 	m_curPlayerNum = 0;
 	m_isGameStarted = false;
+	m_leftTime = playTime;
 
 	for ( auto& player : m_players )
 		player = new Player();
@@ -98,11 +99,15 @@ UxVoid Room::Update()
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
 					Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
-			
+
 			//모두 준비됐으면 게임 시작
 			if ( IsGameStartAble() )
+			{
+				EVENT ev { eventKey,m_roomNum, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
+				Server::GetInstance()->m_timerQueue.push( ev );
 				for ( auto&& p : m_players )
 					Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
+			}
 		}
 		break;
 		case CS_UN_READY:
@@ -157,6 +162,24 @@ UxVoid Room::Update()
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
 					Server::GetInstance()->SendPacketDie( p->GetId(), msg.id );
+		}
+		break;
+		case SC_LEFT_TIME:
+		{
+			--m_leftTime;
+			std::cout << "TICK!" << std::endl;
+			if ( m_leftTime == 0 )
+			{
+				GameOver();
+			}
+			else if ( m_leftTime > 0 && m_isGameStarted )
+			{
+				EVENT ev { eventKey,m_roomNum, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
+				Server::GetInstance()->m_timerQueue.push( ev );
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() )
+						Server::GetInstance()->SendPacketLeftTime( p->GetId(), m_leftTime );
+			}
 		}
 		break;
 		default:
@@ -235,16 +258,27 @@ UxVoid Room::LeaveRoom( UxInt32 id )
 
 UxVoid Room::GameStart()
 {
-	//모든 플레이어에게 게임 시작 패킷 보내주기
-
 	m_isGameStarted = true;
 }
 
-UxVoid Room::GameOver( UxInt32 winner )
+UxVoid Room::GameOver()
 {
 	m_isGameStarted = false;
+	PTC_Winner winner[4];
+	int i = 0;
+	for ( auto&& p : m_players )
+	{
+		winner[i].id = p->GetId();
+		if ( p->IsEmpty() || !p->IsAlive() )
+			winner->isWin = 0;
+		else
+			winner->isWin = 1;
+		++i;
+	}
 
-	//모든 플레이어에게 위너 알려주기
+	for ( auto&& p : m_players )
+		if ( !p->IsEmpty() )
+			Server::GetInstance()->SendPacketGameOver( p->GetId(), winner );
 }
 
 std::string Room::GetRoomName()

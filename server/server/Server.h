@@ -52,17 +52,15 @@ public:
 	UxVoid SendPacketHit( UxInt32 id );//일단 보류
 	UxVoid SendPacketDeductHeart( UxInt32 id, UxInt32 who, UxInt32 num );
 	UxVoid SendPacketDie( UxInt32 id, UxInt32 who );
-	UxVoid SendPacketGameOver( UxInt32 id );
+	UxVoid SendPacketGameOver( UxInt32 id, PTC_Winner* winner );
+	UxVoid SendPacketLeftTime( UxInt32 id, UxUInt8 left_time );
 
 public:
 	HANDLE	m_iocp;
 	std::array<SOCKETINFO*, maxClient> m_clients;
 
-	//락프리 필요..
 	tbb::concurrent_priority_queue<EVENT> m_timerQueue;
-	//std::priority_queue<EVENT> m_timerQueue;
 	tbb::concurrent_queue<message> m_roomMsgQueue;
-	//std::queue<message> m_roomMsgQueue;
 
 	RoomManager				m_roomManager;
 

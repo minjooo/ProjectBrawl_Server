@@ -30,11 +30,12 @@ public:
 	UxInt32 GetRoomNum();
 
 	UxVoid GameStart();
-	UxVoid GameOver( UxInt32 winner );
+	UxVoid GameOver();
 
 private:
 	std::queue<message> m_roomMsg;
 	UxBool m_isGameStarted;
+	UxUInt8 m_leftTime;
 
 	UxInt32 m_roomNum;
 	std::string m_roomName;

@@ -30,22 +30,24 @@ UxVoid WorkerThread::ProcThread()
 
 		SOCKET clientSock;
 		if ( key == eventKey );
-		if ( Server::GetInstance()->m_clients[key]->socket == nullptr ) 
+		else
 		{
-			std::cout << "nullptr Error!!" << std::endl;
-			continue;
+			if ( Server::GetInstance()->m_clients[key]->socket == nullptr )
+			{
+				std::cout << "nullptr Error!!" << std::endl;
+				continue;
+			}
+
+			clientSock = Server::GetInstance()->m_clients[key]->socket->GetSocket();
+
+			if ( num_byte == 0 )
+			{
+				// 클라이언트와 연결끊김 처리 필요
+				std::cout << "recv 0 byte" << std::endl;
+				DisconnectClient( key, clientSock );
+				continue;
+			}
 		}
-
-		clientSock = Server::GetInstance()->m_clients[key]->socket->GetSocket();
-
-		if ( num_byte == 0 )
-		{
-			// 클라이언트와 연결끊김 처리 필요
-			std::cout << "recv 0 byte" << std::endl;
-			DisconnectClient( key, clientSock );
-			continue;
-		}
-
 
 		OVER_EX* over_ex = reinterpret_cast< OVER_EX* >( p_over );
 
@@ -96,6 +98,18 @@ UxVoid WorkerThread::ProcThread()
 		else if ( EEventType::SEND == over_ex->ev_type )
 		{
 			delete over_ex;
+		}
+		else if ( EEventType::TICK == over_ex->ev_type )
+		{
+			message packet2msg;
+			memset( &packet2msg, 0x00, sizeof( message ) );
+			packet2msg.id = -1;
+			packet2msg.roomNum = *( int* )over_ex->net_buf;
+			UxInt8 buf[2];
+			buf[0] = sizeof( buf );
+			buf[1] = SC_LEFT_TIME;
+			packet2msg.buff = buf;
+			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 		}
 		else
 		{

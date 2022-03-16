@@ -271,11 +271,21 @@ UxVoid Server::SendPacketDie( UxInt32 id, UxInt32 who )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketGameOver( UxInt32 id )
+UxVoid Server::SendPacketGameOver( UxInt32 id, PTC_Winner* winner )
 {
 	scGameOver packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_GAME_OVER;
+	memcpy( &packet.winner, winner, sizeof( packet.winner ) );
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketLeftTime( UxInt32 id, UxUInt8 left_time )
+{
+	scLeftTime packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_LEFT_TIME;
+	packet.leftTime = left_time;
 	SendPacket( id, &packet );
 }
 

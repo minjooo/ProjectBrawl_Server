@@ -71,6 +71,7 @@
 #define SC_DEDUCT_HEART		35
 #define SC_DIE				36
 #define SC_GAME_OVER		37
+#define SC_LEFT_TIME		40
 
 ////°á°úÃ¢
 //client -> server
@@ -355,10 +356,26 @@ struct scPacketDie
 	int id;
 };
 
+struct PTC_Winner
+{
+	int id;
+	char isWin;//1 or 0
+};
+
 struct scGameOver
 {
 	char size;
 	char type;
+
+	PTC_Winner winner[4];
+};
+
+struct scLeftTime
+{
+	char size;
+	char type;
+
+	unsigned char leftTime;
 };
 
 #pragma pack (pop)
