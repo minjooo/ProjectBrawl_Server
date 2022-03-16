@@ -294,7 +294,7 @@ struct csPacketAttack
 	//일단 보류
 };
 
-struct csPacketHeartDecrease
+struct csPacketDeductHeart
 {
 	char size;
 	char type;
