@@ -41,6 +41,7 @@ UxVoid WorkerThread::ProcThread()
 		if ( num_byte == 0 )
 		{
 			// 클라이언트와 연결끊김 처리 필요
+			std::cout << "recv 0 byte" << std::endl;
 			DisconnectClient( key, clientSock );
 			continue;
 		}
@@ -121,6 +122,7 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 
 	if ( packet[1] == CS_LOGIN )
 	{
+		std::cout << "[" << id << "] recv login packet" << std::endl;
 		csPacketLogin* loginPacket = reinterpret_cast< csPacketLogin* >( packet );
 		std::string str { loginPacket->id };
 		if ( Server::GetInstance()->IsAvailableId( str ) )
@@ -135,6 +137,7 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 	}
 	else if ( packet[1] == CS_JOIN_GAME )
 	{
+		std::cout << "[" << id << "] recv join game packet" << std::endl;
 		if ( Server::GetInstance()->m_clients[id]->name.length() > 0 )
 			Server::GetInstance()->SendPacketJoinGameOk( id );
 		else
@@ -142,10 +145,12 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 	}
 	else if ( packet[1] == CS_EXIT_GAME )
 	{
+		std::cout << "[" << id << "] recv exit game packet" << std::endl;
 		//클라끊김 처리 필요
 	}
 	else if ( packet[1] == CS_ROOM_LIST )
 	{
+		std::cout << "[" << id << "] recv room list packet" << std::endl;
 		PTC_Room rooms[5];
 		UxInt32 num = Server::GetInstance()->m_roomManager.m_rooms.size();
 		if ( num > 0 )

@@ -34,6 +34,7 @@ UxVoid RoomManagerThread::ProcThread()
 
 			if ( packet[1] == CS_MAKE_ROOM )
 			{
+				std::cout << "[" << msg.id << "] recv make room packet" << std::endl;
 				csPacketMakeRoom* tmpPacket = reinterpret_cast< csPacketMakeRoom* >( packet );
 				std::string tmpRoomName { tmpPacket->name };
 				UxInt32 num = Server::GetInstance()->m_roomManager.AddNewRoom( tmpRoomName );

@@ -56,6 +56,7 @@ UxVoid Room::Update()
 		{
 		case CS_JOIN_ROOM:
 		{
+			std::cout << "[" << msg.id << "] recv join room packet" << std::endl;
 			csPacketJoinRoom* tmpPacket = reinterpret_cast< csPacketJoinRoom* >( packet );
 			UxBool res = EnterRoom( msg.id, msg.name );
 			if ( res )
@@ -72,6 +73,7 @@ UxVoid Room::Update()
 		break;
 		case CS_LEAVE_ROOM:
 		{
+			std::cout << "[" << msg.id << "] recv leave room packet" << std::endl;
 			csPacketLeaveRoom* tmpPacket = reinterpret_cast< csPacketLeaveRoom* >( packet );
 			LeaveRoom( msg.id );
 			for ( auto&& p : m_players )
@@ -81,6 +83,7 @@ UxVoid Room::Update()
 		break;
 		case CS_SELECT_CHARACTER:
 		{
+			std::cout << "[" << msg.id << "] recv select character packet" << std::endl;
 			csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
 			m_players[msg.id]->SetCharacter( tmpPacket->character );
 			for ( auto&& p : m_players )
@@ -90,6 +93,7 @@ UxVoid Room::Update()
 		break;
 		case CS_READY:
 		{
+			std::cout << "[" << msg.id << "] recv ready packet" << std::endl;
 			m_players[msg.id]->SetReady( true );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
@@ -103,6 +107,7 @@ UxVoid Room::Update()
 		break;
 		case CS_UN_READY:
 		{
+			std::cout << "[" << msg.id << "] recv unready packet" << std::endl;
 			m_players[msg.id]->SetReady( false );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
@@ -111,6 +116,7 @@ UxVoid Room::Update()
 		break;
 		case CS_POSITION:
 		{
+			std::cout << ".";
 			csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
 			m_players[msg.id]->SetPos( tmpPacket->x, tmpPacket->y );
 		}
@@ -136,6 +142,7 @@ UxVoid Room::Update()
 		break;
 		case CS_DEDUCT_HEART:
 		{
+			std::cout << "[" << msg.id << "] recv deduct heart packet" << std::endl;
 			m_players[msg.id]->DeductHeart();
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() )
@@ -145,6 +152,7 @@ UxVoid Room::Update()
 		break;
 		case CS_DIE:
 		{
+			std::cout << "[" << msg.id << "] recv die packet" << std::endl;
 			m_players[msg.id]->SetDie();
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )

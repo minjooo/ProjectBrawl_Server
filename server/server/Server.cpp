@@ -57,7 +57,7 @@ void Server::Run()
 				break;
 			}
 		}
-
+		std::cout << "[" << user_id << "] accept!\n";
 		SOCKETINFO* new_player = new SOCKETINFO;
 		new_player->socket = clientSocket;
 
