@@ -66,7 +66,7 @@ UxVoid Room::Update()
 			{
 				for ( auto&& p : m_players )
 					if ( !p->IsEmpty() )
-						Server::GetInstance()->SendPacketJoinRoomOk( p->GetId(), msg.id );
+						Server::GetInstance()->SendPacketJoinRoomOk( p->GetId(), msg.id, msg.name );
 			}
 			else
 			{

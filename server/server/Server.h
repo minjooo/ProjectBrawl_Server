@@ -36,7 +36,7 @@ public:
 	//lobby
 	UxVoid SendPacketMakeRoomOk( UxInt32 id, UxInt32 roomNum );
 	UxVoid SendPacketMakeRoomDeny( UxInt32 id );
-	UxVoid SendPacketJoinRoomOk( UxInt32 id, UxInt32 who );
+	UxVoid SendPacketJoinRoomOk( UxInt32 id, UxInt32 who, std::string name );
 	UxVoid SendPacketJoinRoomDeny( UxInt32 id );
 	UxVoid SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list );
 	//game room

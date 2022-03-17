@@ -136,7 +136,9 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 
 	if ( packet[1] == CS_LOGIN )
 	{
+#ifdef LOG_ON
 		std::cout << "[" << id << "] recv login packet" << std::endl;
+#endif
 		csPacketLogin* loginPacket = reinterpret_cast< csPacketLogin* >( packet );
 		std::string str { loginPacket->id };
 		if ( Server::GetInstance()->IsAvailableId( str ) )
@@ -151,7 +153,9 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 	}
 	else if ( packet[1] == CS_JOIN_GAME )
 	{
+#ifdef LOG_ON
 		std::cout << "[" << id << "] recv join game packet" << std::endl;
+#endif
 		if ( Server::GetInstance()->m_clients[id]->name.length() > 0 )
 			Server::GetInstance()->SendPacketJoinGameOk( id );
 		else
@@ -212,6 +216,7 @@ UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 {
 	//Ήζ Επΐε Γ³Έ®
 	SOCKET clientSock = Server::GetInstance()->m_clients[clientID]->socket->GetSocket();
+	UxInt32 roomNum = Server::GetInstance()->m_clients[clientID]->roomNum;
 
 	closesocket( clientSock );
 	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
@@ -219,6 +224,15 @@ UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 	Server::GetInstance()->m_clients[clientID]->roomNum = notInRoom;
 	Server::GetInstance()->m_clients[clientID]->name = "";
 	Server::GetInstance()->m_clients[clientID]->isConnected = false;
+
+	if ( roomNum != notInRoom )
+	{
+		csPacketLeaveRoom packet;
+		packet.size = sizeof( packet );
+		packet.type = CS_LEAVE_ROOM;
+		message msg { clientID, "",roomNum, &packet };
+		Server::GetInstance()->m_roomMsgQueue.push( msg );
+	}
 
 	std::cout << "Client ID - " << clientID << " disconnected.\n";
 }

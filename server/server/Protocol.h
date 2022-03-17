@@ -84,7 +84,7 @@ struct csPacketLogin
 	char size;
 	char type;
 
-	char id[10];
+	char id[18];
 };
 
 struct csPacketJoinGame
@@ -166,6 +166,7 @@ struct scPacketJoinRoomOk
 	char type;
 
 	int id;
+	char name[18];
 };
 
 struct scPacketJoinRoomDeny
