@@ -177,6 +177,7 @@ struct scPacketRoomUserList
 	int	id;
 	char name[18];
 	char character_type;
+	char isReady;
 };
 
 struct scPacketJoinRoomDeny

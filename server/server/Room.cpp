@@ -67,12 +67,12 @@ UxVoid Room::Update()
 				Server::GetInstance()->SendPacketJoinRoomOk( m_players[m_id2index[msg.id]]->GetId(), m_roomName );
 				//기존 유저에게 신규 유저 알림
 				for ( auto&& p : m_players )
-					if ( !p->IsEmpty() && p->GetId()!=msg.id )
-						Server::GetInstance()->SendPacketRoomUserList( p->GetId(), msg.id, msg.name, m_players[m_id2index[msg.id]]->GetCharacterType() );
+					if ( !p->IsEmpty() && p->GetId() != msg.id )
+						Server::GetInstance()->SendPacketRoomUserList( p->GetId(), msg.id, msg.name, m_players[m_id2index[msg.id]]->GetCharacterType(), m_players[m_id2index[msg.id]]->GetReady() );
 				//신규 유저에게 기존유저 알림
 				for ( auto&& p : m_players )
 					if ( !p->IsEmpty() && p->GetId() != msg.id )
-						Server::GetInstance()->SendPacketRoomUserList( msg.id, p->GetId(), p->GetName(), p->GetCharacterType() );
+						Server::GetInstance()->SendPacketRoomUserList( msg.id, p->GetId(), p->GetName(), p->GetCharacterType(), p->GetReady() );
 
 			}
 			else

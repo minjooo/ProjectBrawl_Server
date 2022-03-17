@@ -11,4 +11,3 @@ public:
 	UxVoid ProcThread() override;
 	UxVoid JoinThread() override;
 };
-

@@ -176,7 +176,7 @@ UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, std::string roomName )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::string name, UxInt8 character_type )
+UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::string name, UxInt8 character_type, UxInt8 is_ready )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send room user list ok!\n";
@@ -186,6 +186,7 @@ UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::string name
 	packet.type = SC_ROOM_USER_LIST;
 	packet.id = who;
 	packet.character_type = character_type;
+	packet.isReady = is_ready;
 	strcpy_s( packet.name, name.c_str() );
 	SendPacket( id, &packet );
 }
