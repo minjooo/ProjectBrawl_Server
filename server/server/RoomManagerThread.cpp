@@ -29,7 +29,9 @@ UxVoid RoomManagerThread::ProcThread()
 
 				if ( packet[1] == CS_MAKE_ROOM )
 				{
+#ifdef LOG_ON
 					std::cout << "[" << msg.id << "] recv make room packet" << std::endl;
+#endif
 					csPacketMakeRoom* tmpPacket = reinterpret_cast< csPacketMakeRoom* >( packet );
 					std::string tmpRoomName { tmpPacket->name };
 					UxInt32 num = Server::GetInstance()->m_roomManager.AddNewRoom( tmpRoomName );
@@ -45,11 +47,17 @@ UxVoid RoomManagerThread::ProcThread()
 				else if ( packet[1] == CS_JOIN_ROOM )
 				{
 					csPacketJoinRoom* tmpPacket = reinterpret_cast< csPacketJoinRoom* >( packet );
-					Server::GetInstance()->m_roomManager.m_rooms[tmpPacket->roomNum]->PushMsg( msg );
+					if ( Server::GetInstance()->m_roomManager.m_rooms.count( tmpPacket->roomNum ) > 0 )
+						Server::GetInstance()->m_roomManager.m_rooms[tmpPacket->roomNum]->PushMsg( msg );
+					else
+						std::cout << "invalid room num (join room)\n";
 				}
 				else
 				{
-					Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
+					if ( Server::GetInstance()->m_roomManager.m_rooms.count( msg.roomNum ) > 0 )
+						Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
+					else
+						std::cout << "invalid room num\n";
 				}
 			}
 		}

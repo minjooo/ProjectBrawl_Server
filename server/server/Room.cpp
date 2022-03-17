@@ -57,7 +57,9 @@ UxVoid Room::Update()
 		{
 		case CS_JOIN_ROOM:
 		{
+#ifdef LOG_ON
 			std::cout << "[" << msg.id << "] recv join room packet" << std::endl;
+#endif
 			csPacketJoinRoom* tmpPacket = reinterpret_cast< csPacketJoinRoom* >( packet );
 			UxBool res = EnterRoom( msg.id, msg.name );
 			if ( res )
@@ -74,7 +76,9 @@ UxVoid Room::Update()
 		break;
 		case CS_LEAVE_ROOM:
 		{
+#ifdef LOG_ON
 			std::cout << "[" << msg.id << "] recv leave room packet" << std::endl;
+#endif
 			csPacketLeaveRoom* tmpPacket = reinterpret_cast< csPacketLeaveRoom* >( packet );
 			LeaveRoom( msg.id );
 			for ( auto&& p : m_players )
@@ -84,7 +88,9 @@ UxVoid Room::Update()
 		break;
 		case CS_SELECT_CHARACTER:
 		{
+#ifdef LOG_ON
 			std::cout << "[" << msg.id << "] recv select character packet" << std::endl;
+#endif
 			csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
 			m_players[m_id2index[msg.id]]->SetCharacter( tmpPacket->character );
 			for ( auto&& p : m_players )
@@ -94,7 +100,9 @@ UxVoid Room::Update()
 		break;
 		case CS_READY:
 		{
+#ifdef LOG_ON
 			std::cout << "[" << msg.id << "] recv ready packet" << std::endl;
+#endif
 			m_players[m_id2index[msg.id]]->SetReady( true );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
@@ -112,7 +120,9 @@ UxVoid Room::Update()
 		break;
 		case CS_UN_READY:
 		{
+#ifdef LOG_ON
 			std::cout << "[" << msg.id << "] recv unready packet" << std::endl;
+#endif
 			m_players[m_id2index[msg.id]]->SetReady( false );
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
@@ -121,7 +131,9 @@ UxVoid Room::Update()
 		break;
 		case CS_POSITION:
 		{
+#ifdef LOG_ON
 			std::cout << ".";
+#endif
 			csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
 			m_players[m_id2index[msg.id]]->SetPos( tmpPacket->x, tmpPacket->y );
 		}
@@ -147,7 +159,9 @@ UxVoid Room::Update()
 		break;
 		case CS_DEDUCT_HEART:
 		{
+#ifdef LOG_ON
 			std::cout << "[" << msg.id << "] recv deduct heart packet" << std::endl;
+#endif
 			m_players[m_id2index[msg.id]]->DeductHeart();
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() )
@@ -157,7 +171,9 @@ UxVoid Room::Update()
 		break;
 		case CS_DIE:
 		{
+#ifdef LOG_ON
 			std::cout << "[" << msg.id << "] recv die packet" << std::endl;
+#endif
 			m_players[m_id2index[msg.id]]->SetDie();
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() && p->GetId() != msg.id )
@@ -167,7 +183,9 @@ UxVoid Room::Update()
 		case SC_LEFT_TIME:
 		{
 			--m_leftTime;
+#ifdef LOG_ON
 			std::cout << "TICK!" << std::endl;
+#endif
 			if ( m_leftTime == 0 )
 			{
 				GameOver();
@@ -183,7 +201,9 @@ UxVoid Room::Update()
 		}
 		break;
 		default:
-			std::cout << "\n\nInvalid Packet Type Error!\n\n";
+		{
+			std::cout << "Invalid Packet Type Error! : " << (int)( packet[1] ) << "\n";
+		}
 			break;
 		}
 	}

@@ -12,9 +12,9 @@ public:
 	UxVoid ProcThread() override;
 	UxVoid JoinThread() override;
 
-	UxVoid ProcPacket( int id, void* buff );
+	UxVoid ProcPacket( UxInt32 id, UxVoid* buff );
 
-	UxVoid DisconnectClient( int clientID, SOCKET client );
+	UxVoid DisconnectClient( UxInt32 clientID );
 
 private:
 	SOCKADDR_IN m_ServerAddr {};

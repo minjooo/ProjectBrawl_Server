@@ -44,7 +44,7 @@ UxVoid WorkerThread::ProcThread()
 			{
 				// 클라이언트와 연결끊김 처리 필요
 				std::cout << "recv 0 byte" << std::endl;
-				DisconnectClient( key, clientSock );
+				DisconnectClient( key );
 				continue;
 			}
 		}
@@ -118,15 +118,15 @@ UxVoid WorkerThread::ProcThread()
 	}
 }
 
-void WorkerThread::JoinThread()
+UxVoid WorkerThread::JoinThread()
 {
 	mythread.join();
 }
 
 
-UxVoid WorkerThread::ProcPacket( int id, void* buf )
+UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 {
-	char* packet = reinterpret_cast< char* >( buf );
+	UxInt8* packet = reinterpret_cast< UxInt8* >( buf );
 	message packet2msg;
 	memset( &packet2msg, 0x00, sizeof( message ) );
 	packet2msg.id = id;
@@ -159,12 +159,16 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 	}
 	else if ( packet[1] == CS_EXIT_GAME )
 	{
+#ifdef LOG_ON
 		std::cout << "[" << id << "] recv exit game packet" << std::endl;
-		//클라끊김 처리 필요
+#endif
+		DisconnectClient( id );
 	}
 	else if ( packet[1] == CS_ROOM_LIST )
 	{
+#ifdef LOG_ON
 		std::cout << "[" << id << "] recv room list packet" << std::endl;
+#endif
 		PTC_Room rooms[5];
 		UxInt32 num = Server::GetInstance()->m_roomManager.m_rooms.size();
 		if ( num > 0 )
@@ -186,7 +190,7 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 			}
 			if ( count % 5 != 0 )
 			{
-				for ( int i = count % 5; i < 5; ++i ) 
+				for ( UxInt32 i = count % 5; i < 5; ++i )
 					rooms[i].id = -1;
 				Server::GetInstance()->SendPacketRoomList( id, num, rooms );
 			}
@@ -204,10 +208,12 @@ UxVoid WorkerThread::ProcPacket( int id, void* buf )
 	}
 }
 
-UxVoid WorkerThread::DisconnectClient( int clientID, SOCKET client )
+UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 {
 	//방 퇴장 처리
-	closesocket( client );
+	SOCKET clientSock = Server::GetInstance()->m_clients[clientID]->socket->GetSocket();
+
+	closesocket( clientSock );
 	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
 	Server::GetInstance()->m_clients[clientID]->socket = nullptr;
 	Server::GetInstance()->m_clients[clientID]->roomNum = notInRoom;
