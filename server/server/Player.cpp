@@ -88,6 +88,11 @@ UxSingle Player::GetPosY()
 	return m_y;
 }
 
+std::string Player::GetName()
+{
+	return m_name;
+}
+
 UxInt8 Player::GetCharacterType()
 {
 	return m_character;

@@ -19,6 +19,7 @@ public:
 	UxBool IsEmpty();
 	UxBool IsAlive();
 	UxInt32 GetId();
+	std::string GetName();
 	UxBool GetReady();
 	UxInt32 GetHeartNum();
 	UxSingle GetPosX();

@@ -28,6 +28,7 @@
 #define SC_JOIN_ROOM_OK		12
 #define SC_JOIN_ROOM_DENY	13
 #define SC_ROOM_LIST		14
+#define SC_ROOM_USER_LIST	15
 
 ////캐릭터 선택
 #define CHARACTER_NONE		0
@@ -165,7 +166,15 @@ struct scPacketJoinRoomOk
 	char size;
 	char type;
 
-	int id;
+	char roomName[18];
+};
+
+struct scPacketRoomUserList
+{
+	char size;
+	char type;
+
+	int	id;
 	char name[18];
 	char character_type;
 };

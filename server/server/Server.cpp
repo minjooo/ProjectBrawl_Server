@@ -164,7 +164,7 @@ UxVoid Server::SendPacketMakeRoomDeny( UxInt32 id )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, UxInt32 who, std::string name, UxInt8 character_type )
+UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, std::string roomName )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send join room ok!\n";
@@ -172,6 +172,18 @@ UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, UxInt32 who, std::string name, 
 	scPacketJoinRoomOk packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_JOIN_ROOM_OK;
+	strcpy_s( packet.roomName, roomName.c_str() );
+	SendPacket( id, &packet );
+}
+
+UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::string name, UxInt8 character_type )
+{
+#ifdef LOG_ON
+	std::cout << "[" << id << "] send room user list ok!\n";
+#endif
+	scPacketRoomUserList packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_ROOM_USER_LIST;
 	packet.id = who;
 	packet.character_type = character_type;
 	strcpy_s( packet.name, name.c_str() );
