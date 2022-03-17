@@ -23,6 +23,7 @@ public:
 	UxInt32 GetHeartNum();
 	UxSingle GetPosX();
 	UxSingle GetPosY();
+	UxInt8 GetCharacterType();
 
 	UxVoid SetReady( UxBool input );
 	UxVoid SetPos( UxSingle x, UxSingle y );

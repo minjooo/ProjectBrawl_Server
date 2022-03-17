@@ -88,6 +88,11 @@ UxSingle Player::GetPosY()
 	return m_y;
 }
 
+UxInt8 Player::GetCharacterType()
+{
+	return m_character;
+}
+
 UxVoid Player::SetPos( UxSingle x, UxSingle y )
 {
 	m_x = x;
