@@ -5,7 +5,7 @@
 #include "TypeDef.h"
 #include "Socket.h"
 
-constexpr size_t maxWorkerThread = 2;
+constexpr size_t maxWorkerThread = 1;
 
 constexpr UxInt32 noMsg = -1;
 constexpr UxInt32 eventKey	= 10000;
@@ -23,7 +23,7 @@ constexpr UxUInt8 playTime	= 180 + 1;
 enum class EEventType
 {
 	RECV, SEND,
-	TICK
+	TICK, GAMESTART
 };
 
 struct EVENT {
@@ -55,7 +55,7 @@ struct SOCKETINFO {
 
 	UxBool	isConnected { false };
 	std::string name { "" };
-	UxInt32 roomNum { notInRoom };
+	std::atomic<UxInt32> roomNum { notInRoom };
 };
 
 struct message {

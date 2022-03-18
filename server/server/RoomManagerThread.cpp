@@ -17,7 +17,7 @@ UxVoid RoomManagerThread::ProcThread()
 	{
 		while ( true == Server::GetInstance()->m_roomMsgQueue.empty() )
 		{
-			std::this_thread::sleep_for( std::chrono::milliseconds( 5 ) );
+			//std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 		}
 
 		while ( !Server::GetInstance()->m_roomMsgQueue.empty() )

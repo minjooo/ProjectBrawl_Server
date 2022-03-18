@@ -21,6 +21,19 @@ RoomManager::~RoomManager()
 
 UxVoid RoomManager::UpdateRooms()
 {
+	//인원 없는 방 제거
+	std::vector<UxInt32> desVec;
+	for ( auto&& room : m_rooms )
+	{
+		if ( room.second->GetDestroy() )
+		{
+			desVec.push_back( room.first );
+		}
+	}
+	if ( desVec.size() > 0 )
+		for ( auto&& i : desVec )
+			DestroyRoom( i );
+
 	for ( auto&& room : m_rooms )
 	{
 		room.second->Update();

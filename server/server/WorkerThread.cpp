@@ -171,7 +171,7 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 	else if ( packet[1] == CS_ROOM_LIST )
 	{
 #ifdef LOG_ON
-		std::cout << "[" << id << "] recv room list packet" << std::endl;
+		//std::cout << "[" << id << "] recv room list packet" << std::endl;
 #endif
 		PTC_Room rooms[5];
 		UxInt32 num = Server::GetInstance()->m_roomManager.m_rooms.size();
@@ -182,6 +182,7 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 			{
 				rooms[count].id = r.second->GetRoomNum();
 				rooms[count].participant = r.second->GetcurPlayerNum();
+				//std::cout << "¹æ ÀÌ¸§ :" << r.second->GetRoomName() << std::endl;
 				strcpy_s( rooms[count].name, r.second->GetRoomName().c_str() );
 
 				++count;

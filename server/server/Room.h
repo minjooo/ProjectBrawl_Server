@@ -32,7 +32,10 @@ public:
 	UxVoid GameStart();
 	UxVoid GameOver();
 
+	UxBool GetDestroy();
+
 private:
+	UxBool m_destroy;
 	std::queue<message> m_roomMsg;
 	UxBool m_isGameStarted;
 	UxUInt8 m_leftTime;

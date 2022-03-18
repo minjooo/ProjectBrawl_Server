@@ -32,6 +32,7 @@ Room::~Room()
 
 void Room::Initialize( UxInt32 room_num )
 {
+	m_destroy = false;
 	m_roomNum = room_num;
 	m_curPlayerNum = 0;
 	m_isGameStarted = false;
@@ -91,6 +92,11 @@ UxVoid Room::Update()
 			for ( auto&& p : m_players )
 				if ( !p->IsEmpty() )
 					Server::GetInstance()->SendPacketLeaveRoom( p->GetId(), msg.id );
+			//플레이어가 한명 남았으면 game over 처리
+			if ( m_curPlayerNum <= 1 )
+				GameOver();
+			else if ( m_curPlayerNum <= 0 )
+				m_destroy = true;
 		}
 		break;
 		case CS_SELECT_CHARACTER:
@@ -122,6 +128,7 @@ UxVoid Room::Update()
 				Server::GetInstance()->m_timerQueue.push( ev );
 				for ( auto&& p : m_players )
 					Server::GetInstance()->SendPacketGameStart( p->GetId() );
+				GameStart();
 			}
 		}
 		break;
@@ -139,9 +146,10 @@ UxVoid Room::Update()
 		case CS_POSITION:
 		{
 #ifdef LOG_ON
-			std::cout << ".";
+			//std::cout << ".";
 #endif
 			csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
+			//std::cout << "recv " << msg.id << "'s pos : " << tmpPacket->x << ", " << tmpPacket->y << std::endl;
 			m_players[m_id2index[msg.id]]->SetPos( tmpPacket->x, tmpPacket->y );
 		}
 		break;
@@ -190,9 +198,9 @@ UxVoid Room::Update()
 		case SC_LEFT_TIME:
 		{
 			--m_leftTime;
-#ifdef LOG_ON
+//#ifdef LOG_ON
 			std::cout << "TICK!" << std::endl;
-#endif
+//#endif
 			if ( m_leftTime == 0 )
 			{
 				GameOver();
@@ -216,10 +224,17 @@ UxVoid Room::Update()
 	}
 
 	//in game send (pos, rot, attack)
-	for ( auto&& p1 : m_players )
-		for ( auto&& p2 : m_players )
-			if ( !p1->IsEmpty() && !p2->IsEmpty() && p1 != p2 )
-				Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY() );
+	if ( m_isGameStarted )
+	{
+		//std::cout << "!";
+		for ( auto&& p1 : m_players )
+			for ( auto&& p2 : m_players )
+				if ( !p1->IsEmpty() && !p2->IsEmpty() && p1 != p2 )
+				{
+					//std::cout <<"send "<< p2->GetId() << "'s pos : " << p2->GetPosX() << ", " << p2->GetPosY() << std::endl;
+					Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY() );
+				}
+	}
 }
 
 UxVoid Room::PushMsg( const message& msg )
@@ -323,4 +338,9 @@ UxInt32 Room::GetcurPlayerNum()
 UxInt32 Room::GetRoomNum()
 {
 	return m_roomNum;
+}
+
+UxBool Room::GetDestroy()
+{
+	return m_destroy;
 }

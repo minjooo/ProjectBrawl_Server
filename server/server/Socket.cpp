@@ -49,6 +49,7 @@ std::shared_ptr<Socket> Socket::Accept( SocketAddress& fromAddr )
 	UxInt32 length { static_cast< UxInt32 >( fromAddr.GetSize() ) };
 	SOCKET newSocket = ::WSAAccept( m_socket, &fromAddr.m_sockAddr, &length, NULL, NULL );
 
+
 	if ( newSocket != INVALID_SOCKET ) 
 	{
 		std::cout << "Socket Created" << std::endl;

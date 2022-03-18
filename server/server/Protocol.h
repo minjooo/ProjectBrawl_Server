@@ -104,6 +104,8 @@ struct scPacketLoginOk
 {
 	char size;
 	char type;
+
+	int id;
 };
 
 struct scPacketLoginDeny

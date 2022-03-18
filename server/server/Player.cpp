@@ -36,6 +36,8 @@ UxVoid Player::Initialize()
 
 	m_id = -1;
 	m_name.clear();
+	m_x = 160.0;
+	m_y = 670.0;
 }
 
 UxVoid Player::Reset()

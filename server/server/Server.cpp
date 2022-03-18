@@ -104,6 +104,7 @@ UxVoid Server::SendPacketLoginOk( UxInt32 id )
 	scPacketLoginOk packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_LOGIN_OK;
+	packet.id = id;
 	SendPacket( id, &packet );
 }
 
@@ -205,7 +206,7 @@ UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
 UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list )
 {
 #ifdef LOG_ON
-	std::cout << "[" << id << "] send room list!\n";
+	//std::cout << "[" << id << "] send room list!\n";
 #endif
 	scPacketRoomList packet;
 	packet.size = sizeof( packet );

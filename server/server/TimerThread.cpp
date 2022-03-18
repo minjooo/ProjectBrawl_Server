@@ -26,6 +26,7 @@ UxVoid TimerThread::ProcThread()
 			if ( std::chrono::high_resolution_clock::now() < ev.wakeup_time )
 			{
 				std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+				Server::GetInstance()->m_timerQueue.push( ev );
 				continue;
 			}
 			EVENT proc_ev = ev;
