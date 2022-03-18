@@ -36,7 +36,7 @@ UxVoid TimerThread::ProcThread()
 			if ( proc_ev.event_type == EEventType::TICK )
 			{
 				over_ex->ev_type = EEventType::TICK;
-				*( int* )over_ex->net_buf = proc_ev.target;
+				*( EVENTINFO* )over_ex->net_buf = proc_ev.info;
 			}
 			else
 			{

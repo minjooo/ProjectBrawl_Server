@@ -51,175 +51,184 @@ UxVoid Room::Update()
 	{
 		message msg = m_roomMsg.front();
 		m_roomMsg.pop();
-
-		char* packet = reinterpret_cast< char* >( msg.buff );
-
-		switch ( packet[1] )
+		if ( msg.id == eventKey )
 		{
-		case CS_JOIN_ROOM:
-		{
-#ifdef LOG_ON
-			std::cout << "[" << msg.id << "] recv join room packet" << std::endl;
-#endif
-			csPacketJoinRoom* tmpPacket = reinterpret_cast< csPacketJoinRoom* >( packet );
-			UxBool res = EnterRoom( msg.id, msg.name );
-			if ( res )
+			EVENTINFO* eventInfo = reinterpret_cast< EVENTINFO* >( msg.buff );
+			switch ( eventInfo->event_type )
 			{
-				Server::GetInstance()->SendPacketJoinRoomOk( m_players[m_id2index[msg.id]]->GetId(), m_roomName );
-				//기존 유저에게 신규 유저 알림
-				for ( auto&& p : m_players )
-					if ( !p->IsEmpty() && p->GetId() != msg.id )
-						Server::GetInstance()->SendPacketRoomUserList( p->GetId(), msg.id, msg.name, m_players[m_id2index[msg.id]]->GetCharacterType(), m_players[m_id2index[msg.id]]->GetReady() );
-				//신규 유저에게 기존유저 알림
-				for ( auto&& p : m_players )
-					if ( !p->IsEmpty() && p->GetId() != msg.id )
-						Server::GetInstance()->SendPacketRoomUserList( msg.id, p->GetId(), p->GetName(), p->GetCharacterType(), p->GetReady() );
-
+			case EEventType::TICK:
+			{
+				--m_leftTime;
+				if ( m_leftTime == 0 )
+				{
+					GameOver();
+				}
+				else if ( m_leftTime > 0 && m_isGameStarted )
+				{
+					EVENT ev { eventKey, *eventInfo, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
+					Server::GetInstance()->m_timerQueue.push( ev );
+					for ( auto&& p : m_players )
+						if ( !p->IsEmpty() )
+							Server::GetInstance()->SendPacketLeftTime( p->GetId(), m_leftTime );
+				}
 			}
-			else
-			{
-				Server::GetInstance()->SendPacketJoinRoomDeny( msg.id );
+			break;
+			default:
+				break;
 			}
 		}
-		break;
-		case CS_LEAVE_ROOM:
+		else
 		{
-#ifdef LOG_ON
-			std::cout << "[" << msg.id << "] recv leave room packet" << std::endl;
-#endif
-			csPacketLeaveRoom* tmpPacket = reinterpret_cast< csPacketLeaveRoom* >( packet );
-			LeaveRoom( msg.id );
-			for ( auto&& p : m_players )
-				if ( !p->IsEmpty() )
-					Server::GetInstance()->SendPacketLeaveRoom( p->GetId(), msg.id );
-			//플레이어가 한명 남았으면 game over 처리
-			if ( m_curPlayerNum <= 1 )
-				GameOver();
-			else if ( m_curPlayerNum <= 0 )
-				m_destroy = true;
-		}
-		break;
-		case CS_SELECT_CHARACTER:
-		{
-#ifdef LOG_ON
-			std::cout << "[" << msg.id << "] recv select character packet" << std::endl;
-#endif
-			csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
-			m_players[m_id2index[msg.id]]->SetCharacter( tmpPacket->character );
-			for ( auto&& p : m_players )
-				if ( !p->IsEmpty() && p->GetId() != msg.id )
-					Server::GetInstance()->SendPacketSelectCharacter( p->GetId(), msg.id, tmpPacket->character );
-		}
-		break;
-		case CS_READY:
-		{
-#ifdef LOG_ON
-			std::cout << "[" << msg.id << "] recv ready packet" << std::endl;
-#endif
-			m_players[m_id2index[msg.id]]->SetReady( true );
-			for ( auto&& p : m_players )
-				if ( !p->IsEmpty() && p->GetId() != msg.id )
-					Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
+			char* packet = reinterpret_cast< char* >( msg.buff );
 
-			//모두 준비됐으면 게임 시작
-			if ( IsGameStartAble() )
+			switch ( packet[1] )
 			{
-				EVENT ev { eventKey,m_roomNum, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
-				Server::GetInstance()->m_timerQueue.push( ev );
-				for ( auto&& p : m_players )
-					Server::GetInstance()->SendPacketGameStart( p->GetId() );
-				GameStart();
+			case CS_JOIN_ROOM:
+			{
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv join room packet" << std::endl;
+#endif
+				csPacketJoinRoom* tmpPacket = reinterpret_cast< csPacketJoinRoom* >( packet );
+				UxBool res = EnterRoom( msg.id, msg.name );
+				if ( res )
+				{
+					Server::GetInstance()->SendPacketJoinRoomOk( m_players[m_id2index[msg.id]]->GetId(), m_roomName );
+					//기존 유저에게 신규 유저 알림
+					for ( auto&& p : m_players )
+						if ( !p->IsEmpty() && p->GetId() != msg.id )
+							Server::GetInstance()->SendPacketRoomUserList( p->GetId(), msg.id, msg.name, m_players[m_id2index[msg.id]]->GetCharacterType(), m_players[m_id2index[msg.id]]->GetReady() );
+					//신규 유저에게 기존유저 알림
+					for ( auto&& p : m_players )
+						if ( !p->IsEmpty() && p->GetId() != msg.id )
+							Server::GetInstance()->SendPacketRoomUserList( msg.id, p->GetId(), p->GetName(), p->GetCharacterType(), p->GetReady() );
+
+				}
+				else
+				{
+					Server::GetInstance()->SendPacketJoinRoomDeny( msg.id );
+				}
 			}
-		}
-		break;
-		case CS_UN_READY:
-		{
-#ifdef LOG_ON
-			std::cout << "[" << msg.id << "] recv unready packet" << std::endl;
-#endif
-			m_players[m_id2index[msg.id]]->SetReady( false );
-			for ( auto&& p : m_players )
-				if ( !p->IsEmpty() && p->GetId() != msg.id )
-					Server::GetInstance()->SendPacketUnReady( p->GetId(), msg.id );
-		}
-		break;
-		case CS_POSITION:
-		{
-#ifdef LOG_ON
-			//std::cout << ".";
-#endif
-			csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
-			//std::cout << "recv " << msg.id << "'s pos : " << tmpPacket->x << ", " << tmpPacket->y << std::endl;
-			m_players[m_id2index[msg.id]]->SetPos( tmpPacket->x, tmpPacket->y );
-		}
-		break;
-		case CS_ROTATE:
-		{
-			//나중에 결정되면 추가 필요
-		}
-		break;
-		case CS_ANIMATION:
-		{
-			csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
-			m_players[m_id2index[msg.id]]->SetAnim( tmpPacket->anim );
-			for ( auto&& p : m_players )
-				if ( !p->IsEmpty() && p->GetId() != msg.id )
-					Server::GetInstance()->SendPacketAnimation( p->GetId(), msg.id, tmpPacket->anim );
-		}
-		break;
-		case CS_ATTACK:
-		{
-			//나중에 추가 필요
-		}
-		break;
-		case CS_DEDUCT_HEART:
-		{
-#ifdef LOG_ON
-			std::cout << "[" << msg.id << "] recv deduct heart packet" << std::endl;
-#endif
-			m_players[m_id2index[msg.id]]->DeductHeart();
-			for ( auto&& p : m_players )
-				if ( !p->IsEmpty() )
-					Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, p->GetHeartNum() );
-			//죽었나 봐야하나?
-		}
-		break;
-		case CS_DIE:
-		{
-#ifdef LOG_ON
-			std::cout << "[" << msg.id << "] recv die packet" << std::endl;
-#endif
-			m_players[m_id2index[msg.id]]->SetDie();
-			for ( auto&& p : m_players )
-				if ( !p->IsEmpty() && p->GetId() != msg.id )
-					Server::GetInstance()->SendPacketDie( p->GetId(), msg.id );
-		}
-		break;
-		case SC_LEFT_TIME:
-		{
-			--m_leftTime;
-//#ifdef LOG_ON
-			std::cout << "TICK!" << std::endl;
-//#endif
-			if ( m_leftTime == 0 )
+			break;
+			case CS_LEAVE_ROOM:
 			{
-				GameOver();
-			}
-			else if ( m_leftTime > 0 && m_isGameStarted )
-			{
-				EVENT ev { eventKey,m_roomNum, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
-				Server::GetInstance()->m_timerQueue.push( ev );
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv leave room packet" << std::endl;
+#endif
+				csPacketLeaveRoom* tmpPacket = reinterpret_cast< csPacketLeaveRoom* >( packet );
+				LeaveRoom( msg.id );
 				for ( auto&& p : m_players )
 					if ( !p->IsEmpty() )
-						Server::GetInstance()->SendPacketLeftTime( p->GetId(), m_leftTime );
+						Server::GetInstance()->SendPacketLeaveRoom( p->GetId(), msg.id );
+				//플레이어가 한명 남았으면 game over 처리
+				if ( m_curPlayerNum <= 1 )
+					GameOver();
+				else if ( m_curPlayerNum <= 0 )
+					m_destroy = true;
 			}
-		}
-		break;
-		default:
-		{
-			std::cout << "Invalid Packet Type Error! : " << (int)( packet[1] ) << "\n";
-		}
 			break;
+			case CS_SELECT_CHARACTER:
+			{
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv select character packet" << std::endl;
+#endif
+				csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
+				m_players[m_id2index[msg.id]]->SetCharacter( tmpPacket->character );
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() && p->GetId() != msg.id )
+						Server::GetInstance()->SendPacketSelectCharacter( p->GetId(), msg.id, tmpPacket->character );
+			}
+			break;
+			case CS_READY:
+			{
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv ready packet" << std::endl;
+#endif
+				m_players[m_id2index[msg.id]]->SetReady( true );
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() && p->GetId() != msg.id )
+						Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
+
+				//모두 준비됐으면 게임 시작
+				if ( IsGameStartAble() )
+				{
+					EVENTINFO ei { -1, m_roomNum,EEventType::TICK };
+					EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
+					Server::GetInstance()->m_timerQueue.push( ev );
+					for ( auto&& p : m_players )
+						Server::GetInstance()->SendPacketGameStart( p->GetId() );
+					GameStart();
+				}
+			}
+			break;
+			case CS_UN_READY:
+			{
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv unready packet" << std::endl;
+#endif
+				m_players[m_id2index[msg.id]]->SetReady( false );
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() && p->GetId() != msg.id )
+						Server::GetInstance()->SendPacketUnReady( p->GetId(), msg.id );
+			}
+			break;
+			case CS_POSITION:
+			{
+#ifdef LOG_ON
+				//std::cout << ".";
+#endif
+				csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
+				//std::cout << "recv " << msg.id << "'s pos : " << tmpPacket->x << ", " << tmpPacket->y << std::endl;
+				m_players[m_id2index[msg.id]]->SetPos( tmpPacket->x, tmpPacket->y );
+			}
+			break;
+			case CS_ROTATE:
+			{
+				//나중에 결정되면 추가 필요
+			}
+			break;
+			case CS_ANIMATION:
+			{
+				csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
+				m_players[m_id2index[msg.id]]->SetAnim( tmpPacket->anim );
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() && p->GetId() != msg.id )
+						Server::GetInstance()->SendPacketAnimation( p->GetId(), msg.id, tmpPacket->anim );
+			}
+			break;
+			case CS_ATTACK:
+			{
+				//나중에 추가 필요
+			}
+			break;
+			case CS_DEDUCT_HEART:
+			{
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv deduct heart packet" << std::endl;
+#endif
+				m_players[m_id2index[msg.id]]->DeductHeart();
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() )
+						Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, p->GetHeartNum() );
+				//죽었나 봐야하나?
+			}
+			break;
+			case CS_DIE:
+			{
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv die packet" << std::endl;
+#endif
+				m_players[m_id2index[msg.id]]->SetDie();
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() && p->GetId() != msg.id )
+						Server::GetInstance()->SendPacketDie( p->GetId(), msg.id );
+			}
+			break;
+			default:
+			{
+				std::cout << "Invalid Packet Type Error! : " << ( int )( packet[1] ) << "\n";
+			}
+			break;
+			}
 		}
 	}
 

@@ -26,9 +26,16 @@ enum class EEventType
 	TICK, GAMESTART
 };
 
+struct EVENTINFO
+{
+	UxInt32 id;
+	UxInt32 roomNum;
+	EEventType event_type;
+};
+
 struct EVENT {
 	UxInt32 id;
-	UxInt32 target;
+	EVENTINFO info;
 	std::chrono::high_resolution_clock::time_point wakeup_time;
 	EEventType event_type;
 	constexpr UxBool operator<( const EVENT& rhs ) const 

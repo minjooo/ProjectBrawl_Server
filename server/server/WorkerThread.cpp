@@ -103,12 +103,12 @@ UxVoid WorkerThread::ProcThread()
 		{
 			message packet2msg;
 			memset( &packet2msg, 0x00, sizeof( message ) );
-			packet2msg.id = -1;
-			packet2msg.roomNum = *( int* )over_ex->net_buf;
-			UxInt8 buf[2];
-			buf[0] = sizeof( buf );
-			buf[1] = SC_LEFT_TIME;
-			packet2msg.buff = buf;
+			packet2msg.id = key; //eventKey
+			packet2msg.roomNum = ( *( EVENTINFO* )over_ex->net_buf ).roomNum;
+			//UxInt8 buf[2];
+			//buf[0] = sizeof( buf );
+			//buf[1] = SC_LEFT_TIME;
+			packet2msg.buff = ( void* )over_ex->net_buf;
 			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 		}
 		else
@@ -171,7 +171,7 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 	else if ( packet[1] == CS_ROOM_LIST )
 	{
 #ifdef LOG_ON
-		//std::cout << "[" << id << "] recv room list packet" << std::endl;
+		std::cout << "[" << id << "] recv room list packet" << std::endl;
 #endif
 		PTC_Room rooms[5];
 		UxInt32 num = Server::GetInstance()->m_roomManager.m_rooms.size();
