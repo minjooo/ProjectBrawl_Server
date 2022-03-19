@@ -2,8 +2,8 @@
 
 #pragma once
 
-#define SERVER_IP	"182.212.60.37"
-//#define SERVER_IP	"127.0.0.1"
+//#define SERVER_IP	"182.212.60.37"
+#define SERVER_IP	"127.0.0.1"
 #define SERVER_PORT	3500
 
 
@@ -268,10 +268,20 @@ struct scPacketLeaveRoom
 	int id;
 };
 
+struct PTC_Player
+{
+	int id;
+
+	float x;
+	float y;
+};
+
 struct scPacketGameStart
 {
 	char size;
 	char type;
+
+	PTC_Player player_list[4];
 };
 
 //======================== in Game ==========================

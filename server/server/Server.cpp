@@ -266,7 +266,7 @@ UxVoid Server::SendPacketLeaveRoom( UxInt32 id, UxInt32 who )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketGameStart( UxInt32 id )
+UxVoid Server::SendPacketGameStart( UxInt32 id, PTC_Player* player_list )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send game start!\n";
@@ -274,6 +274,7 @@ UxVoid Server::SendPacketGameStart( UxInt32 id )
 	scPacketGameStart packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_GAME_START;
+	memcpy( &packet.player_list, player_list, sizeof( packet.player_list ) );
 	SendPacket( id, &packet );
 }
 

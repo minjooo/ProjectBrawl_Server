@@ -38,8 +38,11 @@ void Room::Initialize( UxInt32 room_num )
 	m_isGameStarted = false;
 	m_leftTime = playTime;
 
-	for ( auto& player : m_players )
-		player = new Player();
+	for ( int i = 0; i < maxPlayer; ++i )
+	{
+		m_players[i] = new Player();
+		m_players[i]->SetPos( startPosition[i].x, startPosition[i].y );
+	}
 }
 
 UxVoid Room::Update()
@@ -122,7 +125,7 @@ UxVoid Room::Update()
 				LeaveRoom( msg.id );
 
 				//플레이어가 한명 남았으면 game over 처리
-				if ( m_curPlayerNum <= 1 )
+				if ( IsGameOverAble() )
 					GameOver();
 				else if ( m_curPlayerNum <= 0 )
 					m_destroy = true;
@@ -136,7 +139,7 @@ UxVoid Room::Update()
 				csPacketSelectCharacter* tmpPacket = reinterpret_cast< csPacketSelectCharacter* >( packet );
 				m_players[m_id2index[msg.id]]->SetCharacter( tmpPacket->character );
 				for ( auto&& p : m_players )
-					if ( !p->IsEmpty() && p->GetId() != msg.id )
+					if ( !p->IsEmpty() )
 						Server::GetInstance()->SendPacketSelectCharacter( p->GetId(), msg.id, tmpPacket->character );
 			}
 			break;
@@ -147,7 +150,7 @@ UxVoid Room::Update()
 #endif
 				m_players[m_id2index[msg.id]]->SetReady( true );
 				for ( auto&& p : m_players )
-					if ( !p->IsEmpty() && p->GetId() != msg.id )
+					if ( !p->IsEmpty() )
 						Server::GetInstance()->SendPacketReady( p->GetId(), msg.id );
 
 				//모두 준비됐으면 게임 시작
@@ -156,8 +159,15 @@ UxVoid Room::Update()
 					EVENTINFO ei { -1, m_roomNum,EEventType::TICK };
 					EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( 1 )  , EEventType::TICK };
 					Server::GetInstance()->m_timerQueue.push( ev );
+					PTC_Player players[maxPlayer];
+					for ( int i = 0; i < maxPlayer; ++i )
+					{
+						players[i].id = m_players[i]->GetId();
+						players[i].x = m_players[i]->GetPosX();
+						players[i].y = m_players[i]->GetPosY();
+					}
 					for ( auto&& p : m_players )
-						Server::GetInstance()->SendPacketGameStart( p->GetId() );
+						Server::GetInstance()->SendPacketGameStart( p->GetId(), players );
 					GameStart();
 				}
 			}
@@ -169,7 +179,7 @@ UxVoid Room::Update()
 #endif
 				m_players[m_id2index[msg.id]]->SetReady( false );
 				for ( auto&& p : m_players )
-					if ( !p->IsEmpty() && p->GetId() != msg.id )
+					if ( !p->IsEmpty() )
 						Server::GetInstance()->SendPacketUnReady( p->GetId(), msg.id );
 			}
 			break;
@@ -209,7 +219,17 @@ UxVoid Room::Update()
 				for ( auto&& p : m_players )
 					if ( !p->IsEmpty() )
 						Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, p->GetHeartNum() );
-				//죽었나 봐야하나?
+				//죽었나?
+				if ( m_players[m_id2index[msg.id]]->GetHeartNum() <= 0 )
+				{
+					m_players[m_id2index[msg.id]]->SetDie();
+					for ( auto&& p : m_players )
+						if ( !p->IsEmpty() )
+							Server::GetInstance()->SendPacketDie( p->GetId(), msg.id );
+					//게임 끝났는지 확인
+					if ( IsGameOverAble() )
+						GameOver();
+				}
 			}
 			break;
 			case CS_DIE:
@@ -230,20 +250,19 @@ UxVoid Room::Update()
 			break;
 			}
 		}
-
+	}
 	//in game send (pos, rot, attack)
-		if ( m_isGameStarted )
-		{
-			for ( auto&& p1 : m_players )
-				for ( auto&& p2 : m_players )
-					if ( !p1->IsEmpty() && !p2->IsEmpty() && p1 != p2 )
-					{
-						Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY(), p2->GetSpeed() );
-						Server::GetInstance()->SendPacketRotation( p1->GetId(), p2->GetId(), p2->GetRot() );
-						if ( p2->IsAnimChange() )
-							Server::GetInstance()->SendPacketAnimation( p1->GetId(), p2->GetId(), p2->GetAnimation() );
-					}
-		}
+	if ( m_isGameStarted )
+	{
+		for ( auto&& p1 : m_players )
+			for ( auto&& p2 : m_players )
+				if ( !p1->IsEmpty() && !p2->IsEmpty() && p1 != p2 )
+				{
+					Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY(), p2->GetSpeed() );
+					Server::GetInstance()->SendPacketRotation( p1->GetId(), p2->GetId(), p2->GetRot() );
+					if ( p2->IsAnimChange() )
+						Server::GetInstance()->SendPacketAnimation( p1->GetId(), p2->GetId(), p2->GetAnimation() );
+				}
 	}
 }
 
@@ -262,6 +281,15 @@ UxBool Room::IsEmpty()
 UxBool Room::IsGameStarted()
 {
 	return m_isGameStarted;
+}
+
+UxBool Room::IsGameOverAble()
+{
+	int count { 0 };
+	for ( auto&& p : m_players )
+		if ( !p->IsEmpty() && p->IsAlive() )
+			++count;
+	return count <= 1;
 }
 
 UxBool Room::IsGameStartAble()

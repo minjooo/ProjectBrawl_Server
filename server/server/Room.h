@@ -21,6 +21,7 @@ public:
 	UxBool IsEmpty();
 	UxBool IsGameStartAble();
 	UxBool IsGameStarted();
+	UxBool IsGameOverAble();
 
 	UxBool EnterRoom( UxInt32 id, std::string name );
 	UxVoid LeaveRoom( UxInt32 id );
@@ -44,7 +45,6 @@ private:
 	std::string m_roomName;
 
 	UxInt32 m_curPlayerNum;
-	//std::map<UxInt32, Player*> m_players;
 	std::map<UxInt32, UxInt32> m_id2index;
 	std::array<Player*, maxPlayer> m_players;
 };

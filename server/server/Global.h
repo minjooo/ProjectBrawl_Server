@@ -20,6 +20,14 @@ constexpr UxInt32 maxHeart	= 5;
 constexpr UxInt32 notInRoom = -1;
 constexpr UxUInt8 playTime	= 180 + 1;
 
+struct POSITION
+{
+	UxSingle x;
+	UxSingle y;
+};
+
+constexpr POSITION startPosition[4] { {160.0, 670.0}, {590.0, 670.0}, {-790.0, 670.0}, {-190.0, 670.0} };
+
 enum class EEventType
 {
 	RECV, SEND,

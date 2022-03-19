@@ -45,7 +45,7 @@ public:
 	UxVoid SendPacketReady( UxInt32 id, UxInt32 who );
 	UxVoid SendPacketUnReady( UxInt32 id, UxInt32 who );
 	UxVoid SendPacketLeaveRoom( UxInt32 id, UxInt32 who );
-	UxVoid SendPacketGameStart( UxInt32 id );
+	UxVoid SendPacketGameStart( UxInt32 id, PTC_Player* player_list );
 	//in game
 	UxVoid SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle y, UxSingle speed );
 	UxVoid SendPacketRotation( UxInt32 id,UxInt32 who, UxSingle rot );

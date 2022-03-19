@@ -119,7 +119,7 @@ UxInt8 Player::GetAnimation()
 
 UxBool Player::IsAnimChange()
 {
-	return m_animation == m_preAnimation;
+	return m_animation != m_preAnimation;
 }
 
 UxVoid Player::SetPos( UxSingle x, UxSingle y )
