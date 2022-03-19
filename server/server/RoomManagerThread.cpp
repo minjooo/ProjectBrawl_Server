@@ -18,7 +18,8 @@ UxVoid RoomManagerThread::ProcThread()
 		//while ( true == Server::GetInstance()->m_roomMsgQueue.empty() )
 		//{
 		//	//std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-		//}
+
+		std::this_thread::sleep_for( std::chrono::milliseconds( 16 ) );
 
 		while ( !Server::GetInstance()->m_roomMsgQueue.empty() )
 		{
@@ -38,19 +39,21 @@ UxVoid RoomManagerThread::ProcThread()
 
 					if ( packet[1] == CS_MAKE_ROOM )
 					{
-#ifdef LOG_ON
-						std::cout << "[" << msg.id << "] recv make room packet" << std::endl;
-#endif
 						csPacketMakeRoom* tmpPacket = reinterpret_cast< csPacketMakeRoom* >( packet );
 						std::string tmpRoomName { tmpPacket->name };
+#ifdef LOG_ON
+						std::cout << "[" << msg.id << "] recv make " << tmpRoomName << " room packet" << std::endl;
+#endif
 						UxInt32 num = Server::GetInstance()->m_roomManager.AddNewRoom( tmpRoomName );
 						Server::GetInstance()->SendPacketMakeRoomOk( msg.id, num );
 						message tmpMsg = msg;
+
 						csPacketJoinRoom p;
 						p.size = sizeof( csPacketJoinRoom );
 						p.type = CS_JOIN_ROOM;
 						p.roomNum = num;
-						tmpMsg.buff = &p;
+						memcpy( tmpMsg.buff, &p, p.size );
+						//tmpMsg.buff = &p;
 						Server::GetInstance()->m_roomManager.m_rooms[num]->PushMsg( tmpMsg );
 					}
 					else if ( packet[1] == CS_JOIN_ROOM )

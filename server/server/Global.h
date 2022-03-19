@@ -5,12 +5,12 @@
 #include "TypeDef.h"
 #include "Socket.h"
 
-constexpr size_t maxWorkerThread = 1;
+constexpr size_t maxWorkerThread = 2;
 
 constexpr UxInt32 noMsg = -1;
 constexpr UxInt32 eventKey	= 10000;
 
-constexpr UxInt32 maxBuffer = 256;
+constexpr UxInt32 maxBuffer = 4096;
 
 //¹æ ÀÎ¿ø
 constexpr UxInt32 maxPlayer = 2;
@@ -69,5 +69,5 @@ struct message {
 	UxInt32 id;
 	std::string name;
 	UxInt32 roomNum;
-	void* buff;
+	UxChar buff[128];
 };

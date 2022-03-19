@@ -278,7 +278,7 @@ UxVoid Server::SendPacketGameStart( UxInt32 id )
 }
 
 //in game
-UxVoid Server::SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle y )
+UxVoid Server::SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle y, UxSingle speed )
 {
 	scPacketPosition packet;
 	packet.size = sizeof( packet );
@@ -286,12 +286,18 @@ UxVoid Server::SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle
 	packet.id = who;
 	packet.x = x;
 	packet.y = y;
+	packet.speed = speed;
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRotation( UxInt32 id )//일단 보류
+UxVoid Server::SendPacketRotation( UxInt32 id, UxInt32 who, UxSingle rot )//일단 보류
 {
-
+	scPacketRotation packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_ROTATE;
+	packet.id = who;
+	packet.z = rot;
+	SendPacket( id, &packet );
 }
 
 UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim )

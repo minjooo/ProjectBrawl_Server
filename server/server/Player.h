@@ -24,10 +24,16 @@ public:
 	UxInt32 GetHeartNum();
 	UxSingle GetPosX();
 	UxSingle GetPosY();
+	UxSingle GetSpeed();
+	UxSingle GetRot();
 	UxInt8 GetCharacterType();
+	UxInt8 GetAnimation();
+	UxBool IsAnimChange();
 
 	UxVoid SetReady( UxBool input );
 	UxVoid SetPos( UxSingle x, UxSingle y );
+	UxVoid SetSpeed( UxSingle speed );
+	UxVoid SetRot( UxSingle rot );
 	UxVoid SetAnim( UxInt8 anim );
 	UxVoid SetCharacter( UxInt8 character );
 	UxVoid SetDie();
@@ -46,8 +52,11 @@ private:
 
 	UxInt8 m_character;
 	UxInt8 m_animation;
+	UxInt8 m_preAnimation;
 
-	//방향 가지고있어야 함
 	UxSingle m_x;
 	UxSingle m_y;
+	UxSingle m_speed;
+
+	UxSingle m_rot;
 };

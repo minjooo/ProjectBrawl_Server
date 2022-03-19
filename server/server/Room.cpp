@@ -115,10 +115,12 @@ UxVoid Room::Update()
 				std::cout << "[" << msg.id << "] recv leave room packet" << std::endl;
 #endif
 				csPacketLeaveRoom* tmpPacket = reinterpret_cast< csPacketLeaveRoom* >( packet );
-				LeaveRoom( msg.id );
 				for ( auto&& p : m_players )
 					if ( !p->IsEmpty() )
 						Server::GetInstance()->SendPacketLeaveRoom( p->GetId(), msg.id );
+				//문제 있을 수 있음
+				LeaveRoom( msg.id );
+
 				//플레이어가 한명 남았으면 game over 처리
 				if ( m_curPlayerNum <= 1 )
 					GameOver();
@@ -174,25 +176,23 @@ UxVoid Room::Update()
 			case CS_POSITION:
 			{
 #ifdef LOG_ON
-				//std::cout << ".";
+				//std::cout << "recv " << msg.id << "'s pos : " << tmpPacket->x << ", " << tmpPacket->y << std::endl;
 #endif
 				csPacketPosition* tmpPacket = reinterpret_cast< csPacketPosition* >( packet );
-				//std::cout << "recv " << msg.id << "'s pos : " << tmpPacket->x << ", " << tmpPacket->y << std::endl;
 				m_players[m_id2index[msg.id]]->SetPos( tmpPacket->x, tmpPacket->y );
+				m_players[m_id2index[msg.id]]->SetSpeed( tmpPacket->speed );
 			}
 			break;
 			case CS_ROTATE:
 			{
-				//나중에 결정되면 추가 필요
+				csPacketRotation* tmpPacket = reinterpret_cast< csPacketRotation* >( packet );
+				m_players[m_id2index[msg.id]]->SetRot( tmpPacket->z );
 			}
 			break;
 			case CS_ANIMATION:
 			{
 				csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
 				m_players[m_id2index[msg.id]]->SetAnim( tmpPacket->anim );
-				for ( auto&& p : m_players )
-					if ( !p->IsEmpty() && p->GetId() != msg.id )
-						Server::GetInstance()->SendPacketAnimation( p->GetId(), msg.id, tmpPacket->anim );
 			}
 			break;
 			case CS_ATTACK:
@@ -225,24 +225,25 @@ UxVoid Room::Update()
 			break;
 			default:
 			{
-				std::cout << "Invalid Packet Type Error! : " << ( int )( packet[1] ) << "\n";
+				std::cout << "[" << msg.id << "] Invalid Packet Type Error! : " << ( int )( packet[1] ) << "\n";
 			}
 			break;
 			}
 		}
-	}
 
 	//in game send (pos, rot, attack)
-	if ( m_isGameStarted )
-	{
-		//std::cout << "!";
-		for ( auto&& p1 : m_players )
-			for ( auto&& p2 : m_players )
-				if ( !p1->IsEmpty() && !p2->IsEmpty() && p1 != p2 )
-				{
-					//std::cout <<"send "<< p2->GetId() << "'s pos : " << p2->GetPosX() << ", " << p2->GetPosY() << std::endl;
-					Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY() );
-				}
+		if ( m_isGameStarted )
+		{
+			for ( auto&& p1 : m_players )
+				for ( auto&& p2 : m_players )
+					if ( !p1->IsEmpty() && !p2->IsEmpty() && p1 != p2 )
+					{
+						Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY(), p2->GetSpeed() );
+						Server::GetInstance()->SendPacketRotation( p1->GetId(), p2->GetId(), p2->GetRot() );
+						if ( p2->IsAnimChange() )
+							Server::GetInstance()->SendPacketAnimation( p1->GetId(), p2->GetId(), p2->GetAnimation() );
+					}
+		}
 	}
 }
 

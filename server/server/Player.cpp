@@ -33,6 +33,7 @@ UxVoid Player::Initialize()
 
 	m_character = CHARACTER_NONE;
 	m_animation = ANIM_IDLE;
+	m_preAnimation = ANIM_IDLE;
 
 	m_id = -1;
 	m_name.clear();
@@ -50,6 +51,7 @@ UxVoid Player::Reset()
 
 	m_character = CHARACTER_NONE;
 	m_animation = ANIM_IDLE;
+	m_preAnimation = ANIM_IDLE;
 
 	//m_id = -1;
 	m_name.clear();
@@ -90,6 +92,16 @@ UxSingle Player::GetPosY()
 	return m_y;
 }
 
+UxSingle Player::GetSpeed()
+{
+	return m_speed;
+}
+
+UxSingle Player::GetRot()
+{
+	return m_rot;
+}
+
 std::string Player::GetName()
 {
 	return m_name;
@@ -100,14 +112,35 @@ UxInt8 Player::GetCharacterType()
 	return m_character;
 }
 
+UxInt8 Player::GetAnimation()
+{
+	return m_animation;
+}
+
+UxBool Player::IsAnimChange()
+{
+	return m_animation == m_preAnimation;
+}
+
 UxVoid Player::SetPos( UxSingle x, UxSingle y )
 {
 	m_x = x;
 	m_y = y;
 }
 
+UxVoid Player::SetSpeed( UxSingle speed )
+{
+	m_speed = speed;
+}
+
+UxVoid Player::SetRot( UxSingle rot )
+{
+	m_rot = rot;
+}
+
 UxVoid Player::SetAnim( UxInt8 anim )
 {
+	m_preAnimation = m_animation;
 	m_animation = anim;
 }
 

@@ -22,10 +22,14 @@ UxVoid WorkerThread::ProcThread()
 		WSAOVERLAPPED* p_over;
 
 		BOOL bSuccessful = GetQueuedCompletionStatus( Server::GetInstance()->m_iocp, &num_byte, ( PULONG_PTR )p_key, &p_over, INFINITE );
-		if ( !bSuccessful ) 
+		if ( !bSuccessful )
 		{
 			UxInt32 err_no = GetLastError();
-			std::cout << "Error!!" << std::endl;
+			std::cout << "Error! : " << err_no << std::endl;
+			if ( Server::GetInstance()->m_clients[key]->socket != nullptr )
+				closesocket( Server::GetInstance()->m_clients[key]->socket->GetSocket() );
+			DisconnectClient( key );
+			continue;
 		}
 
 		SOCKET clientSock;
@@ -37,9 +41,6 @@ UxVoid WorkerThread::ProcThread()
 				std::cout << "nullptr Error!!" << std::endl;
 				continue;
 			}
-
-			clientSock = Server::GetInstance()->m_clients[key]->socket->GetSocket();
-
 			if ( num_byte == 0 )
 			{
 				// 클라이언트와 연결끊김 처리 필요
@@ -47,6 +48,8 @@ UxVoid WorkerThread::ProcThread()
 				DisconnectClient( key );
 				continue;
 			}
+
+			clientSock = Server::GetInstance()->m_clients[key]->socket->GetSocket();
 		}
 
 		OVER_EX* over_ex = reinterpret_cast< OVER_EX* >( p_over );
@@ -59,10 +62,11 @@ UxVoid WorkerThread::ProcThread()
 			message msg { -1 };
 			while ( num_byte > 0 )
 			{
-				if ( 0 == psize ) psize = ( BYTE )buf[0];
+				if ( 0 == psize ) psize = buf[0];
 				if ( num_byte + pr_size >= psize )
 				{
 					unsigned char packet[maxBuffer];
+					//char* packet = new char[maxBuffer];
 					memcpy( packet, Server::GetInstance()->m_clients[key]->packet_buf, pr_size );
 					memcpy( packet + pr_size, buf, psize - pr_size );
 					ProcPacket( key, packet );
@@ -105,10 +109,8 @@ UxVoid WorkerThread::ProcThread()
 			memset( &packet2msg, 0x00, sizeof( message ) );
 			packet2msg.id = key; //eventKey
 			packet2msg.roomNum = ( *( EVENTINFO* )over_ex->net_buf ).roomNum;
-			//UxInt8 buf[2];
-			//buf[0] = sizeof( buf );
-			//buf[1] = SC_LEFT_TIME;
-			packet2msg.buff = ( void* )over_ex->net_buf;
+			memcpy( packet2msg.buff, over_ex->net_buf, sizeof( EVENTINFO ) );
+			//packet2msg.buff = ( void* )over_ex->net_buf;
 			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 		}
 		else
@@ -127,13 +129,7 @@ UxVoid WorkerThread::JoinThread()
 UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 {
 	UxInt8* packet = reinterpret_cast< UxInt8* >( buf );
-	message packet2msg;
-	memset( &packet2msg, 0x00, sizeof( message ) );
-	packet2msg.id = id;
-	packet2msg.name = Server::GetInstance()->m_clients[id]->name;
-	packet2msg.roomNum = Server::GetInstance()->m_clients[id]->roomNum;
-	packet2msg.buff = buf;
-
+	//std::cout << "recv size : " << (int)packet[0] << ", type : " << (int)packet[1] << std::endl;
 	if ( packet[1] == CS_LOGIN )
 	{
 #ifdef LOG_ON
@@ -180,17 +176,20 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 			UxInt32 count { 0 };
 			for ( auto&& r : Server::GetInstance()->m_roomManager.m_rooms )
 			{
-				rooms[count].id = r.second->GetRoomNum();
-				rooms[count].participant = r.second->GetcurPlayerNum();
-				//std::cout << "방 이름 :" << r.second->GetRoomName() << std::endl;
-				strcpy_s( rooms[count].name, r.second->GetRoomName().c_str() );
-
-				++count;
-				if ( count == 5 )
+				if ( !r.second->IsGameStarted() )
 				{
-					Server::GetInstance()->SendPacketRoomList( id, num, rooms );
-					count = 0;
-					ZeroMemory( &rooms, sizeof( rooms ) );
+					rooms[count].id = r.second->GetRoomNum();
+					rooms[count].participant = r.second->GetcurPlayerNum();
+					//std::cout << "방 이름 :" << r.second->GetRoomName() << std::endl;
+					strcpy_s( rooms[count].name, r.second->GetRoomName().c_str() );
+
+					++count;
+					if ( count == 5 )
+					{
+						Server::GetInstance()->SendPacketRoomList( id, num, rooms );
+						count = 0;
+						ZeroMemory( &rooms, sizeof( rooms ) );
+					}
 				}
 			}
 			if ( count % 5 != 0 )
@@ -209,6 +208,14 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 	}
 	else
 	{
+		message packet2msg;
+		memset( &packet2msg, 0x00, sizeof( message ) );
+		packet2msg.id = id;
+		packet2msg.name = Server::GetInstance()->m_clients[id]->name;
+		packet2msg.roomNum = Server::GetInstance()->m_clients[id]->roomNum;
+		memcpy( packet2msg.buff, buf, packet[0] );
+		//packet2msg.buff = buf;
+		//std::cout << ( int )packet[0] << ", " << (int)packet[1] << std::endl;
 		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 }
@@ -216,22 +223,31 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 {
 	//방 퇴장 처리
-	SOCKET clientSock = Server::GetInstance()->m_clients[clientID]->socket->GetSocket();
+	if ( Server::GetInstance()->m_clients[clientID]->socket != nullptr )
+	{
+		SOCKET clientSock = Server::GetInstance()->m_clients[clientID]->socket->GetSocket();
+		closesocket( clientSock );
+		std::cout << "close socket\n";
+	}
 	UxInt32 roomNum = Server::GetInstance()->m_clients[clientID]->roomNum;
 
-	closesocket( clientSock );
-	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
 	Server::GetInstance()->m_clients[clientID]->socket = nullptr;
 	Server::GetInstance()->m_clients[clientID]->roomNum = notInRoom;
 	Server::GetInstance()->m_clients[clientID]->name = "";
 	Server::GetInstance()->m_clients[clientID]->isConnected = false;
+	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
 
 	if ( roomNum != notInRoom )
 	{
 		csPacketLeaveRoom packet;
 		packet.size = sizeof( packet );
 		packet.type = CS_LEAVE_ROOM;
-		message msg { clientID, "",roomNum, &packet };
+		message msg;
+		msg.id = clientID;
+		msg.name = "";
+		msg.roomNum = roomNum;
+		memcpy( msg.buff, &packet, packet.size );
+		//{ clientID, "", roomNum, & packet };
 		Server::GetInstance()->m_roomMsgQueue.push( msg );
 	}
 

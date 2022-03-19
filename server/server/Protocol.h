@@ -3,6 +3,7 @@
 #pragma once
 
 #define SERVER_IP	"182.212.60.37"
+//#define SERVER_IP	"127.0.0.1"
 #define SERVER_PORT	3500
 
 
@@ -282,6 +283,7 @@ struct csPacketPosition
 
 	float x;
 	float y;
+	float speed;
 };
 
 struct csPacketRotation
@@ -289,7 +291,7 @@ struct csPacketRotation
 	char size;
 	char type;
 
-	//일단 보류
+	float z;
 };
 
 struct csPacketAnimation
@@ -328,13 +330,16 @@ struct scPacketPosition
 	int id;
 	float x;
 	float y;
+	float speed;
 };
 
 struct scPacketRotation
 {
 	char size;
 	char type;
-	//일단 보류
+
+	int id;
+	float z;
 };
 
 struct scPacketAnimation

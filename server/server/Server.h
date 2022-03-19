@@ -47,8 +47,8 @@ public:
 	UxVoid SendPacketLeaveRoom( UxInt32 id, UxInt32 who );
 	UxVoid SendPacketGameStart( UxInt32 id );
 	//in game
-	UxVoid SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle y );
-	UxVoid SendPacketRotation( UxInt32 id );//일단 보류
+	UxVoid SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle y, UxSingle speed );
+	UxVoid SendPacketRotation( UxInt32 id,UxInt32 who, UxSingle rot );
 	UxVoid SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim );
 	UxVoid SendPacketHit( UxInt32 id );//일단 보류
 	UxVoid SendPacketDeductHeart( UxInt32 id, UxInt32 who, UxInt32 num );
