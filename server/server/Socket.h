@@ -23,6 +23,7 @@ public:
 	int WSAReceive( LPWSABUF lpBuf, DWORD dwBufCnt, LPDWORD lpNumBytesRecvd, LPDWORD dwFlags, LPWSAOVERLAPPED lpOverllaped );
 
 private:
+	friend class SocketUtil;
 	SOCKET	m_socket;
 };
 

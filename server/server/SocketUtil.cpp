@@ -6,19 +6,38 @@
 #include "SocketUtil.h"
 
 
-bool SocketUtil::StaticInitialize()
+UxBool SocketUtil::StaticInitialize()
 {
 	WSADATA wsaData;
 	int result = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
-	if ( result != NO_ERROR ) {
+	if ( result != NO_ERROR ) 
+	{
+		ReportError( "StartUp" );
 		return false;
 	}
 	return true;
 }
 
-void SocketUtil::CleanUp()
+UxVoid SocketUtil::CleanUp()
 {
 	WSACleanup();
+}
+
+UxVoid SocketUtil::ReportError( const UxInt8* desc )
+{
+	WCHAR* buf;
+	DWORD errorNum = WSAGetLastError();
+
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		errorNum,
+		MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+		( LPTSTR )&buf, 0, NULL );
+
+	std::wcout << L"ERROR " << errorNum << " : " << desc << ", " << buf << std::endl;
 }
 
 Socket* SocketUtil::CreateSocket( ESocketAddressFamily family )
@@ -31,6 +50,7 @@ Socket* SocketUtil::CreateSocket( ESocketAddressFamily family )
 	}
 	else
 	{
+		ReportError( "CreateSocket" );
 		return nullptr;
 	}
 }

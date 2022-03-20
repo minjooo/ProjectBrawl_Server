@@ -14,5 +14,6 @@ public:
 	static UxBool StaticInitialize();
 	static Socket* CreateSocket( ESocketAddressFamily family );
 	static UxVoid CleanUp();
+	static UxVoid ReportError( const UxInt8* desc );
 };
 

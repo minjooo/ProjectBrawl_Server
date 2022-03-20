@@ -4,6 +4,7 @@
 #include "TypeDef.h"
 #include "SocketAddress.h"
 #include "Socket.h"
+#include "SocketUtil.h"
 
 
 Socket::~Socket()
@@ -19,6 +20,7 @@ UxInt32 Socket::Connect( const SocketAddress& address )
 	UxInt32 result = ::connect( m_socket, &address.m_sockAddr, address.GetSize() );
 	if ( result == SOCKET_ERROR )
 	{
+		SocketUtil::ReportError( "Connect" );
 		return WSAGetLastError();
 	}
 	return NO_ERROR;
@@ -29,6 +31,7 @@ UxInt32 Socket::Bind( const SocketAddress& address )
 	UxInt32 result = ::bind( m_socket, &address.m_sockAddr, address.GetSize() );
 	if ( result == SOCKET_ERROR ) 
 	{
+		SocketUtil::ReportError( "Bind" );
 		return WSAGetLastError();
 	}
 	return NO_ERROR;
@@ -39,7 +42,7 @@ UxInt32 Socket::Listen( UxInt32 backLog )
 	UxInt32 result = ::listen( m_socket, backLog );
 	if ( result == SOCKET_ERROR )
 	{
-		std::cout << "Listen Error!!!!" << std::endl;
+		SocketUtil::ReportError( "Listen" );
 	}
 	return NO_ERROR;
 }
@@ -52,7 +55,6 @@ Socket* Socket::Accept( SocketAddress& fromAddr )
 
 	if ( newSocket != INVALID_SOCKET ) 
 	{
-		std::cout << "Socket Created" << std::endl;
 		return new Socket( newSocket );
 	}
 	else
@@ -73,6 +75,7 @@ UxInt32 Socket::WSASend( LPWSABUF lpBuf, DWORD dwBufCnt, LPDWORD lpNumBytesSent,
 		UxInt32 errNum { WSAGetLastError() };
 		if ( errNum != WSA_IO_PENDING ) 
 		{
+			SocketUtil::ReportError( "WSASend" );
 			return errNum;
 		}
 	}
@@ -88,6 +91,7 @@ UxInt32 Socket::WSAReceive( LPWSABUF lpBuf, DWORD dwBufCnt, LPDWORD lpNumBytesRe
 		UxInt32 errNum { WSAGetLastError() };
 		if ( errNum != WSA_IO_PENDING ) 
 		{
+			SocketUtil::ReportError( "WSAReceive" );
 			return errNum;
 		}
 	}

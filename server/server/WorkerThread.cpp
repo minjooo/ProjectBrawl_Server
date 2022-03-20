@@ -25,9 +25,7 @@ UxVoid WorkerThread::ProcThread()
 		if ( !bSuccessful )
 		{
 			UxInt32 err_no = GetLastError();
-			std::cout << "Error! : " << err_no << std::endl;
-			if ( Server::GetInstance()->m_clients[key]->socket != nullptr )
-				closesocket( Server::GetInstance()->m_clients[key]->socket->GetSocket() );
+			std::cout << "GQCS Error : " << err_no << std::endl;
 			DisconnectClient( key );
 			continue;
 		}
@@ -38,13 +36,13 @@ UxVoid WorkerThread::ProcThread()
 		{
 			if ( Server::GetInstance()->m_clients[key]->socket == nullptr )
 			{
-				std::cout << "nullptr Error!!" << std::endl;
+				std::cout << "[Error] socket nullptr" << std::endl;
 				continue;
 			}
 			if ( num_byte == 0 )
 			{
 				// 클라이언트와 연결끊김 처리 필요
-				std::cout << "recv 0 byte" << std::endl;
+				std::cout << "[Log] recv 0 byte" << std::endl;
 				DisconnectClient( key );
 				continue;
 			}
@@ -95,7 +93,7 @@ UxVoid WorkerThread::ProcThread()
 			if ( retval == SOCKET_ERROR ) {
 				if ( WSAGetLastError() != ERROR_IO_PENDING )
 				{
-					std::cout << "Recv Error!!!! \n";
+					std::cout << "[Error] recv\n";
 				}
 			}
 		}
@@ -123,7 +121,7 @@ UxVoid WorkerThread::ProcThread()
 		}
 		else
 		{
-			std::cout << "[LOG] Unknown Event Type!!\n";
+			std::cout << "[LOG] Unknown Event Type\n";
 		}
 	}
 }
@@ -137,7 +135,6 @@ UxVoid WorkerThread::JoinThread()
 UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 {
 	UxInt8* packet = reinterpret_cast< UxInt8* >( buf );
-	//std::cout << "recv size : " << (int)packet[0] << ", type : " << (int)packet[1] << std::endl;
 	if ( packet[1] == CS_LOGIN )
 	{
 #ifdef LOG_ON
@@ -188,7 +185,6 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 				{
 					rooms[count].id = r.second->GetRoomNum();
 					rooms[count].participant = r.second->GetcurPlayerNum();
-					//std::cout << "방 이름 :" << r.second->GetRoomName() << std::endl;
 					strcpy_s( rooms[count].name, r.second->GetRoomName().c_str() );
 
 					++count;
@@ -233,7 +229,7 @@ UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 	{
 		SOCKET clientSock = Server::GetInstance()->m_clients[clientID]->socket->GetSocket();
 		closesocket( clientSock );
-		std::cout << "close socket\n";
+		std::cout << "[" << clientID << "] close socket\n";
 	}
 	UxInt32 roomNum = Server::GetInstance()->m_clients[clientID]->roomNum;
 
@@ -256,5 +252,5 @@ UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 		Server::GetInstance()->m_roomMsgQueue.push( msg );
 	}
 
-	std::cout << "Client ID - " << clientID << " disconnected.\n";
+	std::cout << "[" << clientID << "] disconnected.\n";
 }

@@ -384,12 +384,7 @@ UxBool Server::IsAvailableId( const std::string& name )
 {
 	for ( auto&& c : m_clients )
 		if ( c->name == name )
-		{
-#ifdef LOG_ON
-			std::cout <<"이름 이미 있음"<< c->name << ", " << name << std::endl;
-#endif
 			return false;
-		}
 	return true;
 }
 
