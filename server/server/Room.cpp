@@ -76,6 +76,12 @@ UxVoid Room::Update()
 				}
 			}
 			break;
+			case EEventType::INVINCIBLEDONE:
+			{
+				m_players[eventInfo->id]->SetInvincible( false );
+				//클라에게 알림 필요?
+			}
+			break;
 			default:
 				break;
 			}
@@ -202,6 +208,7 @@ UxVoid Room::Update()
 			case CS_ANIMATION:
 			{
 				csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
+				std::cout << "[" << msg.id << "] " << (int)tmpPacket->anim << std::endl;
 				m_players[m_id2index[msg.id]]->SetAnim( tmpPacket->anim );
 			}
 			break;
@@ -216,6 +223,10 @@ UxVoid Room::Update()
 				std::cout << "[" << msg.id << "] recv deduct heart packet" << std::endl;
 #endif
 				m_players[m_id2index[msg.id]]->DeductHeart();
+				m_players[m_id2index[msg.id]]->SetInvincible( true );
+				EVENTINFO ei { msg.id, m_roomNum,EEventType::INVINCIBLEDONE };
+				EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( invincibleTime )  , EEventType::INVINCIBLEDONE };
+				Server::GetInstance()->m_timerQueue.push( ev );
 				for ( auto&& p : m_players )
 					if ( !p->IsEmpty() )
 						Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, p->GetHeartNum() );

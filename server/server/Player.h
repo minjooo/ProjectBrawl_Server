@@ -29,6 +29,7 @@ public:
 	UxInt8 GetCharacterType();
 	UxInt8 GetAnimation();
 	UxBool IsAnimChange();
+	UxBool IsInvincible();
 
 	UxVoid SetReady( UxBool input );
 	UxVoid SetPos( UxSingle x, UxSingle y );
@@ -36,6 +37,7 @@ public:
 	UxVoid SetRot( UxSingle rot );
 	UxVoid SetAnim( UxInt8 anim );
 	UxVoid SetCharacter( UxInt8 character );
+	UxVoid SetInvincible( UxBool invincible );
 	UxVoid SetDie();
 	UxVoid DeductHeart();
 
@@ -49,6 +51,8 @@ private:
 	UxBool m_isEmpty;
 	UxBool m_isReady;
 	UxBool m_isAlive;
+
+	UxBool m_invincible;
 
 	UxInt8 m_character;
 	UxInt8 m_animation;

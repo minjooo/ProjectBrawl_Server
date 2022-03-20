@@ -38,6 +38,11 @@ UxVoid TimerThread::ProcThread()
 				over_ex->ev_type = EEventType::TICK;
 				*( EVENTINFO* )over_ex->net_buf = proc_ev.info;
 			}
+			else if ( proc_ev.event_type == EEventType::INVINCIBLEDONE )
+			{
+				over_ex->ev_type = EEventType::INVINCIBLEDONE;
+				*( EVENTINFO* )over_ex->net_buf = proc_ev.info;
+			}
 			else
 			{
 				std::cout << "Unknown Event Type Error! \n";

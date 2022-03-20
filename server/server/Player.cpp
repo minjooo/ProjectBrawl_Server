@@ -119,7 +119,17 @@ UxInt8 Player::GetAnimation()
 
 UxBool Player::IsAnimChange()
 {
-	return m_animation != m_preAnimation;
+	if ( m_animation != m_preAnimation )
+	{
+		m_animation = m_preAnimation;
+		return true;
+	}
+	return false;
+}
+
+UxBool Player::IsInvincible()
+{
+	return m_invincible;
 }
 
 UxVoid Player::SetPos( UxSingle x, UxSingle y )
@@ -147,6 +157,11 @@ UxVoid Player::SetAnim( UxInt8 anim )
 UxVoid Player::SetCharacter( UxInt8 character )
 {
 	m_character = character;
+}
+
+UxVoid Player::SetInvincible( UxBool invincible )
+{
+	m_invincible = invincible;
 }
 
 UxVoid Player::SetDie()

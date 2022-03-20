@@ -27,7 +27,6 @@ std::shared_ptr<Socket> SocketUtil::CreateSocket( ESocketAddressFamily family )
 
 	if ( s != INVALID_SOCKET )
 	{
-		std::cout << "TCP Socket Created" << std::endl;
 		return std::shared_ptr<Socket>( new Socket( s ) );
 	}
 	else

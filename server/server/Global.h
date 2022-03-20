@@ -19,6 +19,7 @@ constexpr UxInt32 maxClient = 120;
 constexpr UxInt32 maxHeart	= 5;
 constexpr UxInt32 notInRoom = -1;
 constexpr UxUInt8 playTime	= 180 + 1;
+constexpr UxInt32 invincibleTime = 2;
 
 struct POSITION
 {
@@ -31,7 +32,8 @@ constexpr POSITION startPosition[4] { {160.0, 670.0}, {590.0, 670.0}, {-790.0, 6
 enum class EEventType
 {
 	RECV, SEND,
-	TICK, GAMESTART
+	TICK, GAMESTART,
+	INVINCIBLEDONE
 };
 
 struct EVENTINFO

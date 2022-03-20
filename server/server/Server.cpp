@@ -13,7 +13,14 @@ Server::Server()
 
 Server::~Server()
 {
-
+	m_ThreadHandler->JoinThreads();
+	delete m_ThreadHandler;
+	for ( int i = 0; i < maxClient; ++i )
+	{
+		delete m_clients[i];
+		m_clients[i] = nullptr;
+	}
+	m_sockUtil.CleanUp();
 }
 
 UxVoid Server::Initialize()

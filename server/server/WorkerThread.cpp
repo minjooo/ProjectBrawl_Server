@@ -110,7 +110,15 @@ UxVoid WorkerThread::ProcThread()
 			packet2msg.id = key; //eventKey
 			packet2msg.roomNum = ( *( EVENTINFO* )over_ex->net_buf ).roomNum;
 			memcpy( packet2msg.buff, over_ex->net_buf, sizeof( EVENTINFO ) );
-			//packet2msg.buff = ( void* )over_ex->net_buf;
+			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
+		}
+		else if ( EEventType::INVINCIBLEDONE == over_ex->ev_type )
+		{
+			message packet2msg;
+			memset( &packet2msg, 0x00, sizeof( message ) );
+			packet2msg.id = key; //eventKey
+			packet2msg.roomNum = ( *( EVENTINFO* )over_ex->net_buf ).roomNum;
+			memcpy( packet2msg.buff, over_ex->net_buf, sizeof( EVENTINFO ) );
 			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 		}
 		else
@@ -214,8 +222,6 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 		packet2msg.name = Server::GetInstance()->m_clients[id]->name;
 		packet2msg.roomNum = Server::GetInstance()->m_clients[id]->roomNum;
 		memcpy( packet2msg.buff, buf, packet[0] );
-		//packet2msg.buff = buf;
-		//std::cout << ( int )packet[0] << ", " << (int)packet[1] << std::endl;
 		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 	}
 }
