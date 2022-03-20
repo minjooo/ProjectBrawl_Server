@@ -253,7 +253,6 @@ UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 		msg.name = "";
 		msg.roomNum = roomNum;
 		memcpy( msg.buff, &packet, packet.size );
-		//{ clientID, "", roomNum, & packet };
 		Server::GetInstance()->m_roomMsgQueue.push( msg );
 	}
 

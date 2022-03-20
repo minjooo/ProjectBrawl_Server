@@ -21,13 +21,13 @@ void SocketUtil::CleanUp()
 	WSACleanup();
 }
 
-std::shared_ptr<Socket> SocketUtil::CreateSocket( ESocketAddressFamily family )
+Socket* SocketUtil::CreateSocket( ESocketAddressFamily family )
 {
 	SOCKET s = WSASocket( family, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED );
 
 	if ( s != INVALID_SOCKET )
 	{
-		return std::shared_ptr<Socket>( new Socket( s ) );
+		return  new Socket( s );
 	}
 	else
 	{

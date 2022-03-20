@@ -63,8 +63,8 @@ struct OVER_EX
 };
 
 struct SOCKETINFO {
-	OVER_EX					recv_over {};
-	std::shared_ptr<Socket>	socket {};
+	OVER_EX	recv_over {};
+	Socket*	socket;
 
 	UxUInt8 packet_buf[maxBuffer] {};
 	UxInt32 prev_packet_data {};

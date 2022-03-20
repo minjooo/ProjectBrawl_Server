@@ -208,7 +208,6 @@ UxVoid Room::Update()
 			case CS_ANIMATION:
 			{
 				csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
-				std::cout << "[" << msg.id << "] " << (int)tmpPacket->anim << std::endl;
 				m_players[m_id2index[msg.id]]->SetAnim( tmpPacket->anim );
 			}
 			break;

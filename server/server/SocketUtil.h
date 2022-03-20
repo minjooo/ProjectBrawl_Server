@@ -12,7 +12,7 @@ class SocketUtil
 {
 public:
 	static UxBool StaticInitialize();
-	static std::shared_ptr<Socket> CreateSocket( ESocketAddressFamily family );
+	static Socket* CreateSocket( ESocketAddressFamily family );
 	static UxVoid CleanUp();
 };
 

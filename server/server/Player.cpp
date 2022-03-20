@@ -31,7 +31,7 @@ UxVoid Player::Initialize()
 	m_isAlive = true;
 	m_heart = maxHeart;
 
-	m_character = CHARACTER_NONE;
+	m_character = CHARACTER_DESTROYER;
 	m_animation = ANIM_IDLE;
 	m_preAnimation = ANIM_IDLE;
 
@@ -49,7 +49,7 @@ UxVoid Player::Reset()
 	m_isAlive = true;
 	m_heart = maxHeart;
 
-	m_character = CHARACTER_NONE;
+	m_character = CHARACTER_DESTROYER;
 	m_animation = ANIM_IDLE;
 	m_preAnimation = ANIM_IDLE;
 

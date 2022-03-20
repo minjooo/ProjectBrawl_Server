@@ -63,14 +63,14 @@ public:
 	tbb::concurrent_priority_queue<EVENT> m_timerQueue;
 	tbb::concurrent_queue<message> m_roomMsgQueue;
 
-	RoomManager				m_roomManager;
+	RoomManager		m_roomManager;
 
 private:
-	ThreadHandler* m_ThreadHandler;
+	ThreadHandler*	m_ThreadHandler;
 
-	SocketUtil				m_sockUtil;
+	SocketUtil		m_sockUtil;
 
-	std::shared_ptr<Socket> m_listenSocket;
-	SOCKADDR_IN				m_ServerAddr {};
+	Socket*			m_listenSocket;
+	SOCKADDR_IN		m_ServerAddr {};
 };
 

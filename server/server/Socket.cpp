@@ -44,7 +44,7 @@ UxInt32 Socket::Listen( UxInt32 backLog )
 	return NO_ERROR;
 }
 
-std::shared_ptr<Socket> Socket::Accept( SocketAddress& fromAddr )
+Socket* Socket::Accept( SocketAddress& fromAddr )
 {
 	UxInt32 length { static_cast< UxInt32 >( fromAddr.GetSize() ) };
 	SOCKET newSocket = ::WSAAccept( m_socket, &fromAddr.m_sockAddr, &length, NULL, NULL );
@@ -53,7 +53,7 @@ std::shared_ptr<Socket> Socket::Accept( SocketAddress& fromAddr )
 	if ( newSocket != INVALID_SOCKET ) 
 	{
 		std::cout << "Socket Created" << std::endl;
-		return std::shared_ptr<Socket>( new Socket( newSocket ) );
+		return new Socket( newSocket );
 	}
 	else
 		return nullptr;

@@ -48,7 +48,7 @@ void Server::Run()
 	m_ThreadHandler->CreateThreads();
 
 	SocketAddress clientAddress {};
-	std::shared_ptr<Socket> clientSocket {};
+	Socket* clientSocket {};
 	DWORD flags {};
 
 	while ( true ) 

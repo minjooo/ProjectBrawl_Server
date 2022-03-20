@@ -17,7 +17,7 @@ public:
 	UxInt32 Connect(const SocketAddress& addr);
 	UxInt32 Bind( const SocketAddress& addr );
 	UxInt32 Listen( UxInt32 backlog = 32 );
-	std::shared_ptr<Socket> Accept( SocketAddress& fromAddr );
+	Socket* Accept( SocketAddress& fromAddr );
 
 	int WSASend( LPWSABUF lpBuf, DWORD dwBufCnt, LPDWORD lpNumBytesSent, DWORD dwFlags, LPWSAOVERLAPPED lpOverllaped );
 	int WSAReceive( LPWSABUF lpBuf, DWORD dwBufCnt, LPDWORD lpNumBytesRecvd, LPDWORD dwFlags, LPWSAOVERLAPPED lpOverllaped );
