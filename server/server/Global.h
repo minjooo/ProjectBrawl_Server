@@ -2,6 +2,7 @@
 
 #pragma once
 #include "Header.h"
+#include "Protocol.h"
 #include "TypeDef.h"
 #include "Socket.h"
 
@@ -18,7 +19,9 @@ constexpr UxInt32 maxRoom	= 30;
 constexpr UxInt32 maxClient = 120;
 constexpr UxInt32 maxHeart	= 5;
 constexpr UxInt32 notInRoom = -1;
+
 constexpr UxUInt8 playTime	= 180 + 1;
+constexpr UxInt32 coolTime	= 3;
 constexpr UxInt32 invincibleTime = 2;
 
 struct POSITION
@@ -29,11 +32,16 @@ struct POSITION
 
 constexpr POSITION startPosition[4] { {160.0, 670.0}, {590.0, 670.0}, {-790.0, 670.0}, {-190.0, 670.0} };
 
+//none 디트 엔지 소드 위치 로그 순
+constexpr UxInt8 hitType[6] { 0, HIT_KNOCKDOWN, HIT_KNOCKBACK, HIT_KNOCKDOWN , HIT_KNOCKBACK, HIT_KNOCKBACK };
+constexpr UxInt32 attackXRange[6] { 0, 150, 350, 100, 300, 400 };
+constexpr UxInt32 attackYRange = 180;
+
 enum class EEventType
 {
 	RECV, SEND,
 	TICK, GAMESTART,
-	INVINCIBLEDONE
+	INVINCIBLEDONE, RESETCOOLTIME
 };
 
 struct EVENTINFO

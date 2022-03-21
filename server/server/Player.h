@@ -30,6 +30,7 @@ public:
 	UxInt8 GetAnimation();
 	UxBool IsAnimChange();
 	UxBool IsInvincible();
+	UxBool IsSkillCoolReset();
 
 	UxVoid SetReady( UxBool input );
 	UxVoid SetPos( UxSingle x, UxSingle y );
@@ -38,6 +39,7 @@ public:
 	UxVoid SetAnim( UxInt8 anim );
 	UxVoid SetCharacter( UxInt8 character );
 	UxVoid SetInvincible( UxBool invincible );
+	UxVoid SetSkillCool( UxBool skillCool );
 	UxVoid SetDie();
 	UxVoid DeductHeart();
 
@@ -53,6 +55,7 @@ private:
 	UxBool m_isAlive;
 
 	UxBool m_invincible;
+	UxBool m_skillCool;
 
 	UxInt8 m_character;
 	UxInt8 m_animation;

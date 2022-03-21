@@ -321,9 +321,28 @@ UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketHit( UxInt32 id )//일단 보류
+UxVoid Server::SendPacketHit( UxInt32 id, UxInt32 who, UxInt8 hit_type )
 {
+#ifdef LOG_ON
+	std::cout << "[" << id << "] send hit!\n";
+#endif
+	scPacketHit packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_HIT;
+	packet.id = who;
+	packet.hit_type = hit_type;
+	SendPacket( id, &packet );
+}
 
+UxVoid Server::SendPacketResetCoolTime( UxInt32 id )
+{
+#ifdef LOG_ON
+	std::cout << "[" << id << "] send reset cooltime!\n";
+#endif
+	scPacketHit packet;
+	packet.size = sizeof( packet );
+	packet.type = SC_RESET_COOLTIME;
+	SendPacket( id, &packet );
 }
 
 UxVoid Server::SendPacketDeductHeart( UxInt32 id, UxInt32 who, UxInt32 num )

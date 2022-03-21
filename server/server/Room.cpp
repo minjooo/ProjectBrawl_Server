@@ -78,8 +78,14 @@ UxVoid Room::Update()
 			break;
 			case EEventType::INVINCIBLEDONE:
 			{
-				m_players[eventInfo->id]->SetInvincible( false );
+				m_players[m_id2index[eventInfo->id]]->SetInvincible( false );
 				//클라에게 알림 필요?
+			}
+			break;
+			case EEventType::RESETCOOLTIME:
+			{
+				m_players[m_id2index[eventInfo->id]]->SetSkillCool( true );
+				Server::GetInstance()->SendPacketResetCoolTime( eventInfo->id );
 			}
 			break;
 			default:
@@ -213,7 +219,21 @@ UxVoid Room::Update()
 			break;
 			case CS_ATTACK:
 			{
-				//나중에 추가 필요
+#ifdef LOG_ON
+				std::cout << "[" << msg.id << "] recv attack packet" << std::endl;
+#endif
+				if ( m_players[m_id2index[msg.id]]->IsSkillCoolReset() )
+				{
+					m_players[m_id2index[msg.id]]->SetSkillCool( false );
+					EVENTINFO ei { msg.id, m_roomNum,EEventType::RESETCOOLTIME };
+					EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( coolTime )  , EEventType::RESETCOOLTIME };
+					Server::GetInstance()->m_timerQueue.push( ev );
+
+					for ( auto&& p : m_players )
+						if ( !p->IsEmpty() && p->GetId() != msg.id )
+							if ( IsHit( m_id2index[msg.id], m_id2index[p->GetId()] ) )
+								Server::GetInstance()->SendPacketHit( p->GetId(), msg.id, hitType[m_players[m_id2index[msg.id]]->GetCharacterType()] );
+				}
 			}
 			break;
 			case CS_DEDUCT_HEART:
@@ -300,6 +320,15 @@ UxBool Room::IsGameOverAble()
 		if ( !p->IsEmpty() && p->IsAlive() )
 			++count;
 	return count <= 1;
+}
+
+UxBool Room::IsHit( UxInt32 p1index, UxInt32 p2Index )
+{
+	if ( abs( m_players[p1index]->GetPosY() - m_players[p2Index]->GetPosY() ) > 180 )
+		return false;
+	if ( abs( m_players[p1index]->GetPosX() - m_players[p2Index]->GetPosX() ) > attackXRange[m_players[p1index]->GetCharacterType()] )
+		return false;
+	return true;
 }
 
 UxBool Room::IsGameStartAble()

@@ -101,6 +101,7 @@ UxVoid WorkerThread::ProcThread()
 		{
 			delete over_ex;
 		}
+		//밑으로 동일한거 처리 필요
 		else if ( EEventType::TICK == over_ex->ev_type )
 		{
 			message packet2msg;
@@ -111,6 +112,15 @@ UxVoid WorkerThread::ProcThread()
 			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 		}
 		else if ( EEventType::INVINCIBLEDONE == over_ex->ev_type )
+		{
+			message packet2msg;
+			memset( &packet2msg, 0x00, sizeof( message ) );
+			packet2msg.id = key; //eventKey
+			packet2msg.roomNum = ( *( EVENTINFO* )over_ex->net_buf ).roomNum;
+			memcpy( packet2msg.buff, over_ex->net_buf, sizeof( EVENTINFO ) );
+			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
+		}
+		else if ( EEventType::RESETCOOLTIME == over_ex->ev_type )
 		{
 			message packet2msg;
 			memset( &packet2msg, 0x00, sizeof( message ) );
@@ -183,8 +193,8 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 			{
 				if ( !r.second->IsGameStarted() )
 				{
-					rooms[count].id = r.second->GetRoomNum();
-					rooms[count].participant = r.second->GetcurPlayerNum();
+					rooms[count].id = r.second->GetRoomNum() + '0';
+					rooms[count].participant = r.second->GetcurPlayerNum() + '0';
 					strcpy_s( rooms[count].name, r.second->GetRoomName().c_str() );
 
 					++count;

@@ -31,7 +31,7 @@ UxVoid RoomManagerThread::ProcThread()
 					if ( Server::GetInstance()->m_roomManager.m_rooms.count( msg.roomNum ) > 0 )
 						Server::GetInstance()->m_roomManager.m_rooms[msg.roomNum]->PushMsg( msg );
 					else
-						std::cout << "invalid room num\n";
+						std::cout << "invalid room num : " << msg.roomNum << "\n";
 				}
 				else
 				{
@@ -62,7 +62,7 @@ UxVoid RoomManagerThread::ProcThread()
 						if ( Server::GetInstance()->m_roomManager.m_rooms.count( tmpPacket->roomNum ) > 0 )
 							Server::GetInstance()->m_roomManager.m_rooms[tmpPacket->roomNum]->PushMsg( msg );
 						else
-							std::cout << "invalid room num (join room)\n";
+							std::cout << "invalid room num (join room) : " << msg.roomNum << "\n";
 					}
 					else
 					{

@@ -2,8 +2,8 @@
 
 #pragma once
 
-#define SERVER_IP	"182.212.60.37"
-//#define SERVER_IP	"127.0.0.1"
+//#define SERVER_IP	"182.212.60.37"
+#define SERVER_IP	"127.0.0.1"
 #define SERVER_PORT	3500
 
 
@@ -54,10 +54,14 @@
 //animation type
 #define ANIM_IDLE			1
 #define ANIM_RUN			2
-#define ANIM_JUMP			3 //떨어지는 애니메이션 따로 있음 추가 필요
-#define ANIM_ATTACK			4 //일단 attack만...
-#define ANIM_KNOCKBACK		5 //일단 넉백만...
+#define ANIM_JUMP			3
+#define ANIM_ATTACK			4
+#define ANIM_KNOCKBACK		5
+#define ANIM_KNOCKDOWN		7
 #define ANIM_DIE			6
+//hit type
+#define HIT_KNOCKBACK		1
+#define HIT_KNOCKDOWN		2
 //client -> server
 #define CS_POSITION			30
 #define CS_ROTATE			31 //수정 여부 있음
@@ -74,6 +78,7 @@
 #define SC_DIE				36
 #define SC_GAME_OVER		37
 #define SC_LEFT_TIME		40
+#define SC_RESET_COOLTIME	41
 
 ////결과창
 //client -> server
@@ -192,7 +197,7 @@ struct scPacketJoinRoomDeny
 struct PTC_Room
 {
 	char id;
-	char name[10];
+	char name[20];
 	char participant;
 };
 
@@ -365,7 +370,15 @@ struct scPacketHit
 {
 	char size;
 	char type;
-	//일단 보류
+
+	int id;
+	char hit_type;
+};
+
+struct scPacketResetCooltime
+{
+	char size;
+	char type;
 };
 
 struct scPacketDeductHeart

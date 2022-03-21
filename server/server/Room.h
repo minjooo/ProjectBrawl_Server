@@ -22,6 +22,7 @@ public:
 	UxBool IsGameStartAble();
 	UxBool IsGameStarted();
 	UxBool IsGameOverAble();
+	UxBool IsHit( UxInt32 p1index, UxInt32 p2Index );
 
 	UxBool EnterRoom( UxInt32 id, std::string name );
 	UxVoid LeaveRoom( UxInt32 id );

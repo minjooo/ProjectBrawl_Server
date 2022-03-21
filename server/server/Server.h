@@ -50,7 +50,8 @@ public:
 	UxVoid SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle y, UxSingle speed );
 	UxVoid SendPacketRotation( UxInt32 id,UxInt32 who, UxSingle rot );
 	UxVoid SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim );
-	UxVoid SendPacketHit( UxInt32 id );//일단 보류
+	UxVoid SendPacketHit( UxInt32 id, UxInt32 who, UxInt8 hit_type );
+	UxVoid SendPacketResetCoolTime( UxInt32 id );
 	UxVoid SendPacketDeductHeart( UxInt32 id, UxInt32 who, UxInt32 num );
 	UxVoid SendPacketDie( UxInt32 id, UxInt32 who );
 	UxVoid SendPacketGameOver( UxInt32 id, PTC_Winner* winner );

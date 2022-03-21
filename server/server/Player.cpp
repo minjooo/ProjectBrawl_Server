@@ -132,6 +132,11 @@ UxBool Player::IsInvincible()
 	return m_invincible;
 }
 
+UxBool Player::IsSkillCoolReset()
+{
+	return !m_skillCool;
+}
+
 UxVoid Player::SetPos( UxSingle x, UxSingle y )
 {
 	m_x = x;
@@ -162,6 +167,11 @@ UxVoid Player::SetCharacter( UxInt8 character )
 UxVoid Player::SetInvincible( UxBool invincible )
 {
 	m_invincible = invincible;
+}
+
+UxVoid Player::SetSkillCool( UxBool skillCool )
+{
+	m_skillCool = skillCool;
 }
 
 UxVoid Player::SetDie()
