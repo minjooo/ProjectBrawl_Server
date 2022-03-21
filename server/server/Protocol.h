@@ -2,8 +2,8 @@
 
 #pragma once
 
-//#define SERVER_IP	"182.212.60.37"
-#define SERVER_IP	"127.0.0.1"
+#define SERVER_IP	"182.212.60.37"
+//#define SERVER_IP	"127.0.0.1"
 #define SERVER_PORT	3500
 
 
@@ -314,7 +314,7 @@ struct csPacketAnimation
 	char size;
 	char type;
 
-	char anim;
+	int anim;
 };
 
 struct csPacketAttack
@@ -363,7 +363,7 @@ struct scPacketAnimation
 	char type;
 
 	int id;
-	char anim;
+	int anim;
 };
 
 struct scPacketHit
@@ -372,6 +372,7 @@ struct scPacketHit
 	char type;
 
 	int id;
+	char char_type;
 	char hit_type;
 };
 

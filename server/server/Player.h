@@ -27,8 +27,7 @@ public:
 	UxSingle GetSpeed();
 	UxSingle GetRot();
 	UxInt8 GetCharacterType();
-	UxInt8 GetAnimation();
-	UxBool IsAnimChange();
+	UxInt32 GetAnimation();
 	UxBool IsInvincible();
 	UxBool IsSkillCoolReset();
 
@@ -36,7 +35,7 @@ public:
 	UxVoid SetPos( UxSingle x, UxSingle y );
 	UxVoid SetSpeed( UxSingle speed );
 	UxVoid SetRot( UxSingle rot );
-	UxVoid SetAnim( UxInt8 anim );
+	UxVoid SetAnim( UxInt32 anim );
 	UxVoid SetCharacter( UxInt8 character );
 	UxVoid SetInvincible( UxBool invincible );
 	UxVoid SetSkillCool( UxBool skillCool );
@@ -58,8 +57,7 @@ private:
 	UxBool m_skillCool;
 
 	UxInt8 m_character;
-	UxInt8 m_animation;
-	UxInt8 m_preAnimation;
+	UxInt32 m_animation;
 
 	UxSingle m_x;
 	UxSingle m_y;

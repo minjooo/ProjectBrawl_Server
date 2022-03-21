@@ -321,7 +321,7 @@ UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketHit( UxInt32 id, UxInt32 who, UxInt8 hit_type )
+UxVoid Server::SendPacketHit( UxInt32 id, UxInt32 who, UxInt8 char_type, UxInt8 hit_type )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send hit!\n";
@@ -330,6 +330,7 @@ UxVoid Server::SendPacketHit( UxInt32 id, UxInt32 who, UxInt8 hit_type )
 	packet.size = sizeof( packet );
 	packet.type = SC_HIT;
 	packet.id = who;
+	packet.char_type = char_type;
 	packet.hit_type = hit_type;
 	SendPacket( id, &packet );
 }

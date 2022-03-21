@@ -61,7 +61,7 @@ UxVoid Room::Update()
 			{
 			case EEventType::TICK:
 			{
-				--m_leftTime;
+				//--m_leftTime;
 				if ( m_leftTime == 0 )
 				{
 					GameOver();
@@ -215,6 +215,9 @@ UxVoid Room::Update()
 			{
 				csPacketAnimation* tmpPacket = reinterpret_cast< csPacketAnimation* >( packet );
 				m_players[m_id2index[msg.id]]->SetAnim( tmpPacket->anim );
+				for ( auto&& p : m_players )
+					if ( !p->IsEmpty() && p->GetId() != msg.id )
+						Server::GetInstance()->SendPacketAnimation( p->GetId(), msg.id, m_players[m_id2index[msg.id]]->GetAnimation() );
 			}
 			break;
 			case CS_ATTACK:
@@ -232,7 +235,7 @@ UxVoid Room::Update()
 					for ( auto&& p : m_players )
 						if ( !p->IsEmpty() && p->GetId() != msg.id )
 							if ( IsHit( m_id2index[msg.id], m_id2index[p->GetId()] ) )
-								Server::GetInstance()->SendPacketHit( p->GetId(), msg.id, hitType[m_players[m_id2index[msg.id]]->GetCharacterType()] );
+								Server::GetInstance()->SendPacketHit( p->GetId(), msg.id, m_players[m_id2index[msg.id]]->GetCharacterType(), hitType[m_players[m_id2index[msg.id]]->GetCharacterType()] );
 				}
 			}
 			break;
@@ -290,8 +293,6 @@ UxVoid Room::Update()
 				{
 					Server::GetInstance()->SendPacketPosition( p1->GetId(), p2->GetId(), p2->GetPosX(), p2->GetPosY(), p2->GetSpeed() );
 					Server::GetInstance()->SendPacketRotation( p1->GetId(), p2->GetId(), p2->GetRot() );
-					if ( p2->IsAnimChange() )
-						Server::GetInstance()->SendPacketAnimation( p1->GetId(), p2->GetId(), p2->GetAnimation() );
 				}
 	}
 }
@@ -340,6 +341,7 @@ UxBool Room::IsHit( UxInt32 p1index, UxInt32 p2Index )
 		if ( dis > 0 && dis <= attackXRange[m_players[p1index]->GetCharacterType()] )
 			return true;
 	}
+	return false;
 }
 
 UxBool Room::IsGameStartAble()

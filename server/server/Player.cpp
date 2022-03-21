@@ -33,7 +33,6 @@ UxVoid Player::Initialize()
 
 	m_character = CHARACTER_DESTROYER;
 	m_animation = ANIM_IDLE;
-	m_preAnimation = ANIM_IDLE;
 
 	m_id = -1;
 	m_name.clear();
@@ -51,7 +50,6 @@ UxVoid Player::Reset()
 
 	m_character = CHARACTER_DESTROYER;
 	m_animation = ANIM_IDLE;
-	m_preAnimation = ANIM_IDLE;
 
 	//m_id = -1;
 	m_name.clear();
@@ -112,19 +110,9 @@ UxInt8 Player::GetCharacterType()
 	return m_character;
 }
 
-UxInt8 Player::GetAnimation()
+UxInt32 Player::GetAnimation()
 {
 	return m_animation;
-}
-
-UxBool Player::IsAnimChange()
-{
-	if ( m_animation != m_preAnimation )
-	{
-		m_animation = m_preAnimation;
-		return true;
-	}
-	return false;
 }
 
 UxBool Player::IsInvincible()
@@ -134,7 +122,7 @@ UxBool Player::IsInvincible()
 
 UxBool Player::IsSkillCoolReset()
 {
-	return !m_skillCool;
+	return m_skillCool;
 }
 
 UxVoid Player::SetPos( UxSingle x, UxSingle y )
@@ -153,9 +141,8 @@ UxVoid Player::SetRot( UxSingle rot )
 	m_rot = rot;
 }
 
-UxVoid Player::SetAnim( UxInt8 anim )
+UxVoid Player::SetAnim( UxInt32 anim )
 {
-	m_preAnimation = m_animation;
 	m_animation = anim;
 }
 
