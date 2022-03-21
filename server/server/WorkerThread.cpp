@@ -2,6 +2,7 @@
 
 #include "Protocol.h"
 #include "Server.h"
+#include "Slander.h"
 #include "WorkerThread.h"
 
 
@@ -152,7 +153,7 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 #endif
 		csPacketLogin* loginPacket = reinterpret_cast< csPacketLogin* >( packet );
 		std::string str { loginPacket->id };
-		if ( Server::GetInstance()->IsAvailableId( str ) )
+		if ( Server::GetInstance()->IsAvailableId( str ) && !Slander::IsSlander( str ) )
 		{
 			Server::GetInstance()->m_clients[id]->name = str;
 			Server::GetInstance()->SendPacketLoginOk( id );

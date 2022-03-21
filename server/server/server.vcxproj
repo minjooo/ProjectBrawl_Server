@@ -153,6 +153,9 @@
     <ClInclude Include="RoomManagerThread.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Slander.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Socket.h" />
     <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SocketUtil.h" />
@@ -169,6 +172,9 @@
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="RoomManagerThread.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Slander.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="SocketUtil.cpp" />

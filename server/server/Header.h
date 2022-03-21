@@ -13,6 +13,8 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <iostream>
+#include <fstream>
 #include <tbb/parallel_for.h>
 #include <tbb/concurrent_queue.h>
 #include <tbb/concurrent_priority_queue.h>

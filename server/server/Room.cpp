@@ -326,9 +326,20 @@ UxBool Room::IsHit( UxInt32 p1index, UxInt32 p2Index )
 {
 	if ( abs( m_players[p1index]->GetPosY() - m_players[p2Index]->GetPosY() ) > 180 )
 		return false;
-	if ( abs( m_players[p1index]->GetPosX() - m_players[p2Index]->GetPosX() ) > attackXRange[m_players[p1index]->GetCharacterType()] )
-		return false;
-	return true;
+	//left
+	if ( m_players[p1index]->GetRot() > 0 )
+	{
+		UxSingle dis = m_players[p2Index]->GetPosX() - m_players[p1index]->GetPosX();
+		if ( dis > 0 && dis <= attackXRange[m_players[p1index]->GetCharacterType()] )
+			return true;
+	}
+	//right
+	else
+	{
+		UxSingle dis = m_players[p1index]->GetPosX() - m_players[p2Index]->GetPosX();
+		if ( dis > 0 && dis <= attackXRange[m_players[p1index]->GetCharacterType()] )
+			return true;
+	}
 }
 
 UxBool Room::IsGameStartAble()

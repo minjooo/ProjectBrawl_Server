@@ -3,6 +3,7 @@
 #include "Header.h"
 #include "Protocol.h"
 #include "Server.h"
+#include "Slander.h"
 #include "RoomManagerThread.h"
 
 
@@ -44,17 +45,24 @@ UxVoid RoomManagerThread::ProcThread()
 #ifdef LOG_ON
 						std::cout << "[" << msg.id << "] recv make " << tmpRoomName << " room packet" << std::endl;
 #endif
-						UxInt32 num = Server::GetInstance()->m_roomManager.AddNewRoom( tmpRoomName );
-						Server::GetInstance()->SendPacketMakeRoomOk( msg.id, num );
-						message tmpMsg = msg;
+						if ( Slander::IsSlander( tmpRoomName ) )
+						{
+							Server::GetInstance()->SendPacketMakeRoomDeny( msg.id );
+						}
+						else
+						{
+							UxInt32 num = Server::GetInstance()->m_roomManager.AddNewRoom( tmpRoomName );
+							Server::GetInstance()->SendPacketMakeRoomOk( msg.id, num );
+							message tmpMsg = msg;
 
-						csPacketJoinRoom p;
-						p.size = sizeof( csPacketJoinRoom );
-						p.type = CS_JOIN_ROOM;
-						p.roomNum = num;
-						memcpy( tmpMsg.buff, &p, p.size );
-						//tmpMsg.buff = &p;
-						Server::GetInstance()->m_roomManager.m_rooms[num]->PushMsg( tmpMsg );
+							csPacketJoinRoom p;
+							p.size = sizeof( csPacketJoinRoom );
+							p.type = CS_JOIN_ROOM;
+							p.roomNum = num;
+							memcpy( tmpMsg.buff, &p, p.size );
+							//tmpMsg.buff = &p;
+							Server::GetInstance()->m_roomManager.m_rooms[num]->PushMsg( tmpMsg );
+						}
 					}
 					else if ( packet[1] == CS_JOIN_ROOM )
 					{

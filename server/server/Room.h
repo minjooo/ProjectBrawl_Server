@@ -49,4 +49,3 @@ private:
 	std::map<UxInt32, UxInt32> m_id2index;
 	std::array<Player*, maxPlayer> m_players;
 };
-
