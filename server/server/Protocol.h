@@ -138,7 +138,7 @@ struct csPacketMakeRoom
 	char size;
 	char type;
 
-	char name[10];
+	char name[20];
 };
 
 struct csPacketJoinRoom
@@ -174,7 +174,7 @@ struct scPacketJoinRoomOk
 	char size;
 	char type;
 
-	char roomName[18];
+	char roomName[20];
 };
 
 struct scPacketRoomUserList
