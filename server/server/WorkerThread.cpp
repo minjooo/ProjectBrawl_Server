@@ -156,6 +156,7 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 		if ( Server::GetInstance()->IsAvailableId( str ) && !Slander::IsSlander( str ) )
 		{
 			Server::GetInstance()->m_clients[id]->name = str;
+			std::cout << "pass name : " << Server::GetInstance()->m_clients[id]->name << std::endl;
 			Server::GetInstance()->SendPacketLoginOk( id );
 		}
 		else
@@ -227,6 +228,9 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 		memset( &packet2msg, 0x00, sizeof( message ) );
 		packet2msg.id = id;
 		packet2msg.name = Server::GetInstance()->m_clients[id]->name;
+		char tmp[18];
+		strcpy_s( tmp, Server::GetInstance()->m_clients[id]->name.c_str() );
+		packet2msg.name.assign( tmp, Server::GetInstance()->m_clients[id]->name.length() );
 		packet2msg.roomNum = Server::GetInstance()->m_clients[id]->roomNum;
 		memcpy( packet2msg.buff, buf, packet[0] );
 		Server::GetInstance()->m_roomMsgQueue.push( packet2msg );

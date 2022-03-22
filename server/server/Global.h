@@ -30,7 +30,7 @@ struct POSITION
 	UxSingle y;
 };
 
-constexpr POSITION startPosition[4] { {160.0, 670.0}, {590.0, 670.0}, {-790.0, 670.0}, {-190.0, 670.0} };
+constexpr POSITION startPosition[4] { {0, 670.0}, {-230, 670.0}, {-790.0, 670.0}, {-420.0, 670.0} };
 
 //none 디트 엔지 소드 위치 로그 순
 constexpr UxInt8 hitType[6] { 0, HIT_KNOCKDOWN, HIT_KNOCKBACK, HIT_KNOCKDOWN , HIT_KNOCKBACK, HIT_KNOCKBACK };
