@@ -139,7 +139,7 @@ UxVoid Room::Update()
 				//플레이어가 한명 남았으면 game over 처리
 				if ( IsGameOverAble() )
 					GameOver();
-				else if ( m_curPlayerNum <= 0 )
+				if ( m_curPlayerNum <= 0 )
 					m_destroy = true;
 			}
 			break;
