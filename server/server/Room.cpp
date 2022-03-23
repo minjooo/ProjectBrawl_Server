@@ -61,7 +61,7 @@ UxVoid Room::Update()
 			{
 			case EEventType::TICK:
 			{
-				//--m_leftTime;
+				--m_leftTime;
 				if ( m_leftTime == 0 )
 				{
 					GameOver();
@@ -251,7 +251,7 @@ UxVoid Room::Update()
 				Server::GetInstance()->m_timerQueue.push( ev );
 				for ( auto&& p : m_players )
 					if ( !p->IsEmpty() )
-						Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, p->GetHeartNum() );
+						Server::GetInstance()->SendPacketDeductHeart( p->GetId(), msg.id, m_players[m_id2index[msg.id]]->GetHeartNum() );
 				//Á×¾ú³ª?
 				if ( m_players[m_id2index[msg.id]]->GetHeartNum() <= 0 )
 				{
@@ -398,18 +398,15 @@ UxVoid Room::GameStart()
 UxVoid Room::GameOver()
 {
 	m_isGameStarted = false;
-	PTC_Winner winner[4];
-	int i = 0;
-	for ( auto&& p : m_players )
+	PTC_Winner winner[4] { { -1,0 }, { -1,0 }, { -1,0 }, { -1,0 } };
+	for ( int i = 0; i < maxPlayer; ++i )
 	{
-		winner[i].id = p->GetId();
-		if ( p->IsEmpty() || !p->IsAlive() )
-			winner->isWin = 0;
+		winner[i].id = m_players[i]->GetId();
+		if ( !m_players[i]->IsEmpty() && m_players[i]->IsAlive() )
+			winner[i].isWin = 1;
 		else
-			winner->isWin = 1;
-		++i;
+			winner[i].isWin = 0;
 	}
-
 	for ( auto&& p : m_players )
 		if ( !p->IsEmpty() )
 			Server::GetInstance()->SendPacketGameOver( p->GetId(), winner );

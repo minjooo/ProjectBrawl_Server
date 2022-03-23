@@ -388,7 +388,7 @@ UxVoid Server::SendPacketGameOver( UxInt32 id, PTC_Winner* winner )
 UxVoid Server::SendPacketLeftTime( UxInt32 id, UxUInt8 left_time )
 {
 #ifdef LOG_ON
-	std::cout << "[" << id << "] send tick!\n";
+	//std::cout << "[" << id << "] send tick!\n";
 #endif
 	scLeftTime packet;
 	packet.size = sizeof( packet );
