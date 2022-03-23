@@ -45,7 +45,7 @@ UxInt32 RoomManager::GetNextRoomCounter()
 	return ++m_roomCounter;
 }
 
-UxInt32 RoomManager::AddNewRoom( std::string name )
+UxInt32 RoomManager::AddNewRoom( std::wstring name )
 {
 	++m_roomCounter;
 	m_rooms.insert( std::make_pair( m_roomCounter, new Room( m_roomCounter, name ) ) );

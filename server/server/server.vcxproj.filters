@@ -24,7 +24,7 @@
     <Filter Include="Room">
       <UniqueIdentifier>{c01428c5-d445-4407-a1e5-455eb6e4c97b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Exel">
+    <Filter Include="Slander">
       <UniqueIdentifier>{7afb1e58-d6c1-4fdd-97ec-bed3fbd5b78c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -81,7 +81,7 @@
       <Filter>Room</Filter>
     </ClInclude>
     <ClInclude Include="Slander.h">
-      <Filter>Exel</Filter>
+      <Filter>Slander</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,7 +125,7 @@
       <Filter>Room</Filter>
     </ClCompile>
     <ClCompile Include="Slander.cpp">
-      <Filter>Exel</Filter>
+      <Filter>Slander</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

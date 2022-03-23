@@ -103,7 +103,7 @@ UxVoid Server::SendPacket( UxInt32 id, UxVoid* buff )
 }
 
 //main
-UxVoid Server::SendPacketLoginOk( UxInt32 id )
+UxVoid Server::SendPacketLoginOk( UxInt32 id, std::wstring name )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send login ok!\n";
@@ -112,6 +112,7 @@ UxVoid Server::SendPacketLoginOk( UxInt32 id )
 	packet.size = sizeof( packet );
 	packet.type = SC_LOGIN_OK;
 	packet.id = id;
+	wcscpy_s( packet.name, name.c_str() );
 	SendPacket( id, &packet );
 }
 
@@ -172,7 +173,7 @@ UxVoid Server::SendPacketMakeRoomDeny( UxInt32 id )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, std::string roomName )
+UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, std::wstring roomName )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send join room ok!\n";
@@ -180,11 +181,11 @@ UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, std::string roomName )
 	scPacketJoinRoomOk packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_JOIN_ROOM_OK;
-	strcpy_s( packet.roomName, roomName.c_str() );
+	wcscpy_s( packet.roomName, roomName.c_str() );
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::string name, UxInt8 character_type, UxInt8 is_ready )
+UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::wstring name, UxInt8 character_type, UxInt8 is_ready )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send room user list ok!\n";
@@ -195,7 +196,7 @@ UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::string name
 	packet.id = who;
 	packet.character_type = character_type;
 	packet.isReady = is_ready;
-	strcpy_s( packet.name, name.c_str() );
+	wcscpy_s( packet.name, name.c_str() );
 	SendPacket( id, &packet );
 }
 
@@ -210,7 +211,7 @@ UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list )
+UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 roomId, std::wstring roomName, UxInt8 participant )
 {
 #ifdef LOG_ON
 	//std::cout << "[" << id << "] send room list!\n";
@@ -218,8 +219,9 @@ UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_
 	scPacketRoomList packet;
 	packet.size = sizeof( packet );
 	packet.type = SC_ROOM_LIST;
-	packet.totalNum = totalNum;
-	memcpy( &packet.room_list, room_list, sizeof( packet.room_list ) );
+	packet.id = roomId;
+	wcscpy_s( packet.name, roomName.c_str() );
+	packet.participant = participant;
 	SendPacket( id, &packet );
 }
 
@@ -298,7 +300,7 @@ UxVoid Server::SendPacketPosition( UxInt32 id, UxInt32 who, UxSingle x, UxSingle
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRotation( UxInt32 id, UxInt32 who, UxSingle rot )//일단 보류
+UxVoid Server::SendPacketRotation( UxInt32 id, UxInt32 who, UxSingle rot )
 {
 	scPacketRotation packet;
 	packet.size = sizeof( packet );
@@ -400,7 +402,7 @@ SOCKADDR_IN Server::GetServerAddr()
 	return m_ServerAddr;
 }
 
-UxBool Server::IsAvailableId( const std::string& name )
+UxBool Server::IsAvailableId( const std::wstring& name )
 {
 	for ( auto&& c : m_clients )
 		if ( c->name == name )

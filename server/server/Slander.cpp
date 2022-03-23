@@ -5,7 +5,7 @@
 #include "Slander.h"
 
 
-UxBool Slander::IsSlander( const UxString& name )
+UxBool Slander::IsSlander( const std::wstring& name )
 {
 	std::ifstream f;
 	f.open( "Slander.csv" );
@@ -16,10 +16,11 @@ UxBool Slander::IsSlander( const UxString& name )
 		return true;
 	}
 
-	UxString str;
-	while ( f >> str )
-		if ( name.find( str ) != UxString::npos )
-			return true;
+	//std::wstring str;
+	//while ( f >> str )
+	//	if ( name.find( str ) != std::wstring::npos )
+	//		return true;
 
+	
 	return false;
 }

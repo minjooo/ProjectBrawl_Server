@@ -91,7 +91,7 @@ struct csPacketLogin
 	char size;
 	char type;
 
-	char id[18];
+	wchar_t id[24];
 };
 
 struct csPacketJoinGame
@@ -112,6 +112,7 @@ struct scPacketLoginOk
 	char type;
 
 	int id;
+	wchar_t name[24];
 };
 
 struct scPacketLoginDeny
@@ -138,7 +139,7 @@ struct csPacketMakeRoom
 	char size;
 	char type;
 
-	char name[20];
+	wchar_t name[24];
 };
 
 struct csPacketJoinRoom
@@ -174,7 +175,7 @@ struct scPacketJoinRoomOk
 	char size;
 	char type;
 
-	char roomName[20];
+	wchar_t roomName[24];
 };
 
 struct scPacketRoomUserList
@@ -183,7 +184,7 @@ struct scPacketRoomUserList
 	char type;
 
 	int	id;
-	char name[18];
+	wchar_t name[24];
 	char character_type;
 	char isReady;
 };
@@ -194,20 +195,14 @@ struct scPacketJoinRoomDeny
 	char type;
 };
 
-struct PTC_Room
-{
-	char id;
-	char name[20];
-	char participant;
-};
-
 struct scPacketRoomList
 {
 	char size;
 	char type;
 
-	int totalNum;
-	PTC_Room room_list[5];
+	char id;
+	wchar_t name[24];
+	char participant;
 };
 //totalNum에 총 갯수를 보냅니다
 //항상 5개를 보내지만 예를들어 3개만 있는경우 나머지의 id는 -1이 들갑니다
@@ -321,8 +316,6 @@ struct csPacketAttack
 {
 	char size;
 	char type;
-
-	//일단 보류
 };
 
 struct csPacketDeductHeart

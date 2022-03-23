@@ -9,7 +9,7 @@ class Room
 {
 public:
 	Room( UxInt32 room_num );
-	Room( UxInt32 room_num, std::string room_name );
+	Room( UxInt32 room_num, std::wstring room_name );
 	~Room();
 
 public:
@@ -24,10 +24,10 @@ public:
 	UxBool IsGameOverAble();
 	UxBool IsHit( UxInt32 p1index, UxInt32 p2Index );
 
-	UxBool EnterRoom( UxInt32 id, std::string name );
+	UxBool EnterRoom( UxInt32 id, std::wstring name );
 	UxVoid LeaveRoom( UxInt32 id );
 
-	std::string GetRoomName();
+	std::wstring GetRoomName();
 	UxInt32 GetcurPlayerNum();
 	UxInt32 GetRoomNum();
 
@@ -43,7 +43,7 @@ private:
 	UxUInt8 m_leftTime;
 
 	UxInt32 m_roomNum;
-	std::string m_roomName;
+	std::wstring m_roomName;
 
 	UxInt32 m_curPlayerNum;
 	std::map<UxInt32, UxInt32> m_id2index;

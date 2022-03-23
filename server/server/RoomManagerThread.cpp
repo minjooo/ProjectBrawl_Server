@@ -41,9 +41,9 @@ UxVoid RoomManagerThread::ProcThread()
 					if ( packet[1] == CS_MAKE_ROOM )
 					{
 						csPacketMakeRoom* tmpPacket = reinterpret_cast< csPacketMakeRoom* >( packet );
-						std::string tmpRoomName { tmpPacket->name };
+						std::wstring tmpRoomName { tmpPacket->name };
 #ifdef LOG_ON
-						std::cout << "[" << msg.id << "] recv make " << tmpRoomName << " room packet" << std::endl;
+						//std::cout << u"[" << msg.id << u"] recv make " << tmpRoomName << u" room packet" << std::endl;
 #endif
 						if ( Slander::IsSlander( tmpRoomName ) )
 						{

@@ -15,12 +15,16 @@
 #include <atomic>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <atlbase.h>
+#include <codecvt>
 #include <tbb/parallel_for.h>
 #include <tbb/concurrent_queue.h>
 #include <tbb/concurrent_priority_queue.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
+#pragma comment(lib, "atls.lib")
 #pragma comment(lib, "Ws2_32.lib")
 
-//#define LOG_ON
+#define LOG_ON

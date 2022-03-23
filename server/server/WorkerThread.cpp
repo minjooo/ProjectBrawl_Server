@@ -142,7 +142,6 @@ UxVoid WorkerThread::JoinThread()
 	mythread.join();
 }
 
-
 UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 {
 	UxInt8* packet = reinterpret_cast< UxInt8* >( buf );
@@ -151,13 +150,15 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 #ifdef LOG_ON
 		std::cout << "[" << id << "] recv login packet" << std::endl;
 #endif
-		csPacketLogin* loginPacket = reinterpret_cast< csPacketLogin* >( packet );
-		std::string str { loginPacket->id };
-		if ( Server::GetInstance()->IsAvailableId( str ) && !Slander::IsSlander( str ) )
+		csPacketLogin* loginPacket = reinterpret_cast< csPacketLogin* >( packet );		
+		
+		std::wstring strUTF { loginPacket->id };
+		std::wcout << strUTF << std::endl;
+
+		if ( Server::GetInstance()->IsAvailableId( strUTF ) && !Slander::IsSlander( strUTF ) )
 		{
-			Server::GetInstance()->m_clients[id]->name = str;
-			std::cout << "pass name : " << Server::GetInstance()->m_clients[id]->name << std::endl;
-			Server::GetInstance()->SendPacketLoginOk( id );
+			Server::GetInstance()->m_clients[id]->name = strUTF;
+			Server::GetInstance()->SendPacketLoginOk( id, strUTF );
 		}
 		else
 		{
@@ -186,40 +187,10 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 #ifdef LOG_ON
 		std::cout << "[" << id << "] recv room list packet" << std::endl;
 #endif
-		PTC_Room rooms[5];
-		UxInt32 num = Server::GetInstance()->m_roomManager.m_rooms.size();
-		if ( num > 0 )
+		Server::GetInstance()->SendPacketRoomList( id, -1, L"", -1 );
+		for ( auto&& room : Server::GetInstance()->m_roomManager.m_rooms )
 		{
-			UxInt32 count { 0 };
-			for ( auto&& r : Server::GetInstance()->m_roomManager.m_rooms )
-			{
-				if ( !r.second->IsGameStarted() )
-				{
-					rooms[count].id = r.second->GetRoomNum() + '0';
-					rooms[count].participant = r.second->GetcurPlayerNum() + '0';
-					strcpy_s( rooms[count].name, r.second->GetRoomName().c_str() );
-
-					++count;
-					if ( count == 5 )
-					{
-						Server::GetInstance()->SendPacketRoomList( id, num, rooms );
-						count = 0;
-						ZeroMemory( &rooms, sizeof( rooms ) );
-					}
-				}
-			}
-			if ( count % 5 != 0 )
-			{
-				for ( UxInt32 i = count % 5; i < 5; ++i )
-					rooms[i].id = -1;
-				Server::GetInstance()->SendPacketRoomList( id, num, rooms );
-			}
-		}
-		else
-		{
-			for ( auto&& r : rooms )
-				r.id = -1;
-			Server::GetInstance()->SendPacketRoomList( id, num, rooms );
+			Server::GetInstance()->SendPacketRoomList( id, room.second->GetRoomNum(), room.second->GetRoomName(), room.second->GetcurPlayerNum() );
 		}
 	}
 	else
@@ -228,8 +199,8 @@ UxVoid WorkerThread::ProcPacket( UxInt32 id, UxVoid* buf )
 		memset( &packet2msg, 0x00, sizeof( message ) );
 		packet2msg.id = id;
 		packet2msg.name = Server::GetInstance()->m_clients[id]->name;
-		char tmp[18];
-		strcpy_s( tmp, Server::GetInstance()->m_clients[id]->name.c_str() );
+		wchar_t tmp[18];
+		wcscpy_s( tmp, Server::GetInstance()->m_clients[id]->name.c_str() );
 		packet2msg.name.assign( tmp, Server::GetInstance()->m_clients[id]->name.length() );
 		packet2msg.roomNum = Server::GetInstance()->m_clients[id]->roomNum;
 		memcpy( packet2msg.buff, buf, packet[0] );
@@ -250,7 +221,7 @@ UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 
 	Server::GetInstance()->m_clients[clientID]->socket = nullptr;
 	Server::GetInstance()->m_clients[clientID]->roomNum = notInRoom;
-	Server::GetInstance()->m_clients[clientID]->name = "";
+	Server::GetInstance()->m_clients[clientID]->name = L"";
 	Server::GetInstance()->m_clients[clientID]->isConnected = false;
 	ZeroMemory( Server::GetInstance()->m_clients[clientID], sizeof( SOCKETINFO ) );
 
@@ -261,7 +232,7 @@ UxVoid WorkerThread::DisconnectClient( UxInt32 clientID )
 		packet.type = CS_LEAVE_ROOM;
 		message msg;
 		msg.id = clientID;
-		msg.name = "";
+		msg.name = L"";
 		msg.roomNum = roomNum;
 		memcpy( msg.buff, &packet, packet.size );
 		Server::GetInstance()->m_roomMsgQueue.push( msg );

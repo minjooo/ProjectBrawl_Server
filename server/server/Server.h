@@ -24,22 +24,22 @@ public:
 public:
 	UxVoid CreateClientsSlot();
 	SOCKADDR_IN GetServerAddr();
-	UxBool IsAvailableId( const std::string& name );
+	UxBool IsAvailableId( const std::wstring& name );
 
 public:
 	UxVoid SendPacket( UxInt32 id, UxVoid* buff );
 	//main
-	UxVoid SendPacketLoginOk( UxInt32 id );
+	UxVoid SendPacketLoginOk( UxInt32 id, std::wstring name );
 	UxVoid SendPacketLoginDeny( UxInt32 id );
 	UxVoid SendPacketJoinGameOk( UxInt32 id );
 	UxVoid SendPacketJoinGameDeny( UxInt32 id );
 	//lobby
 	UxVoid SendPacketMakeRoomOk( UxInt32 id, UxInt32 roomNum );
 	UxVoid SendPacketMakeRoomDeny( UxInt32 id );
-	UxVoid SendPacketJoinRoomOk( UxInt32 id, std::string roomName );
-	UxVoid SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::string name, UxInt8 character_type, UxInt8 is_ready );
+	UxVoid SendPacketJoinRoomOk( UxInt32 id, std::wstring roomName );
+	UxVoid SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::wstring name, UxInt8 character_type, UxInt8 is_ready );
 	UxVoid SendPacketJoinRoomDeny( UxInt32 id );
-	UxVoid SendPacketRoomList( UxInt32 id, UxInt32 totalNum, PTC_Room* room_list );
+	UxVoid SendPacketRoomList( UxInt32 id, UxInt32 roomId, std::wstring roomName, UxInt8 participant );
 	//game room
 	UxVoid SendPacketSelectCharacter( UxInt32 id, UxInt32 who, UxInt8 cha );
 	UxVoid SendPacketReady( UxInt32 id, UxInt32 who );

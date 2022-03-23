@@ -17,7 +17,7 @@ Player::~Player()
 
 }
 
-UxVoid Player::EnterRoom( UxInt32 id, std::string name )
+UxVoid Player::EnterRoom( UxInt32 id, std::wstring name )
 {
 	m_isEmpty = false;
 	m_id = id;
@@ -100,7 +100,7 @@ UxSingle Player::GetRot()
 	return m_rot;
 }
 
-std::string Player::GetName()
+std::wstring Player::GetName()
 {
 	return m_name;
 }

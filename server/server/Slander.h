@@ -6,5 +6,5 @@
 class Slander
 {
 public:
-	static UxBool IsSlander( const UxString& name );
+	static UxBool IsSlander( const std::wstring& name );
 };

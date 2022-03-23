@@ -12,7 +12,7 @@ public:
 public:
 	UxVoid UpdateRooms();
 	UxInt32 GetNextRoomCounter();
-	UxInt32 AddNewRoom( std::string name );
+	UxInt32 AddNewRoom( std::wstring name );
 	UxVoid DestroyRoom( UxInt32 roomNum );
 
 public:

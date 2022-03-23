@@ -14,7 +14,7 @@ constexpr UxInt32 eventKey	= 10000;
 constexpr UxInt32 maxBuffer = 4096;
 
 //¹æ ÀÎ¿ø
-constexpr UxInt32 maxPlayer = 2;
+constexpr UxInt32 maxPlayer = 1;
 constexpr UxInt32 maxRoom	= 30;
 constexpr UxInt32 maxClient = 120;
 constexpr UxInt32 maxHeart	= 5;
@@ -79,13 +79,13 @@ struct SOCKETINFO {
 	UxInt32 curr_packet_size {};
 
 	UxBool	isConnected { false };
-	std::string name { "" };
+	std::wstring name = L"";
 	std::atomic<UxInt32> roomNum { notInRoom };
 };
 
 struct message {
 	UxInt32 id;
-	std::string name;
+	std::wstring name;
 	UxInt32 roomNum;
 	UxChar buff[128];
 };

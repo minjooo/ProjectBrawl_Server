@@ -12,7 +12,7 @@ Room::Room( UxInt32 room_num )
 	Initialize( room_num );
 }
 
-Room::Room( UxInt32 room_num, std::string room_name )
+Room::Room( UxInt32 room_num, std::wstring room_name )
 {
 	Initialize( room_num );
 	m_roomName = room_name;
@@ -353,7 +353,7 @@ UxBool Room::IsGameStartAble()
 	return true;
 }
 
-UxBool Room::EnterRoom( UxInt32 id, std::string name )
+UxBool Room::EnterRoom( UxInt32 id, std::wstring name )
 {
 	if ( m_curPlayerNum >= maxPlayer )
 		return false;
@@ -415,7 +415,7 @@ UxVoid Room::GameOver()
 			Server::GetInstance()->SendPacketGameOver( p->GetId(), winner );
 }
 
-std::string Room::GetRoomName()
+std::wstring Room::GetRoomName()
 {
 	return m_roomName;
 }
