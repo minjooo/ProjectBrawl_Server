@@ -14,7 +14,7 @@ constexpr UxInt32 eventKey	= 10000;
 constexpr UxInt32 maxBuffer = 4096;
 
 //방 인원
-constexpr UxInt32 maxPlayer = 2;
+constexpr UxInt32 maxPlayer = 4;
 constexpr UxInt32 maxRoom	= 30;
 constexpr UxInt32 maxClient = 120;
 constexpr UxInt32 maxHeart	= 5;
@@ -33,7 +33,7 @@ struct POSITION
 constexpr POSITION startPosition[4] { {0, 670.0}, {-230, 670.0}, {-790.0, 670.0}, {-420.0, 670.0} };
 
 //none 디트 엔지 소드 위치 로그 순
-constexpr UxInt8 hitType[6] { 0, HIT_KNOCKDOWN, HIT_KNOCKBACK, HIT_KNOCKDOWN , HIT_KNOCKBACK, HIT_KNOCKBACK };
+constexpr UxInt32 hitType[6] { 0, HIT_KNOCKDOWN, HIT_KNOCKBACK, HIT_KNOCKDOWN , HIT_KNOCKBACK, HIT_KNOCKBACK };
 constexpr UxInt32 attackXRange[6] { 0, 250, 700, 300, 500, 700 };
 constexpr UxInt32 attackYRange[6] { 0, 250, 150, 200, 200, 120 };
 //constexpr UxInt32 attackYRange = 180;

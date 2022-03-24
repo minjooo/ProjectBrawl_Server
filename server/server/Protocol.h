@@ -186,8 +186,8 @@ struct scPacketRoomUserList
 
 	int	id;
 	wchar_t name[24];
-	char character_type;
-	char isReady;
+	int character_type;
+	bool isReady;
 };
 
 struct scPacketJoinRoomDeny
@@ -201,9 +201,9 @@ struct scPacketRoomList
 	char size;
 	char type;
 
-	char id;
+	int id;
+	int participant;
 	wchar_t name[24];
-	char participant;
 };
 //totalNum에 총 갯수를 보냅니다
 //항상 5개를 보내지만 예를들어 3개만 있는경우 나머지의 id는 -1이 들갑니다
@@ -215,7 +215,7 @@ struct csPacketSelectCharacter
 	char size;
 	char type;
 
-	char character;
+	int character;
 };
 
 struct csPacketReady
@@ -242,7 +242,7 @@ struct scPacketSelectCharacter
 	char type;
 
 	int id;
-	char character;
+	int character;
 };
 
 struct scPacketReady
@@ -366,8 +366,8 @@ struct scPacketHit
 	char type;
 
 	int id;
-	char char_type;
-	char hit_type;
+	int char_type;
+	int hit_type;
 };
 
 struct scPacketResetCooltime
@@ -396,7 +396,7 @@ struct scPacketDie
 struct PTC_Winner
 {
 	int id;
-	char isWin;//1 or 0
+	bool isWin;//1 or 0
 };
 
 struct scGameOver

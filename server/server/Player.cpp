@@ -42,11 +42,10 @@ UxVoid Player::Initialize()
 
 UxVoid Player::Reset()
 {
-	//게임 끝났을 때 게임룸으로 돌아가면 변경 필요
 	m_isEmpty = true;
 	m_isReady = false;
 	m_isAlive = true;
-	m_heart = maxHeart;
+	m_heart	  = 0;
 
 	m_character = CHARACTER_DESTROYER;
 	m_animation = ANIM_IDLE;
@@ -105,7 +104,7 @@ std::wstring Player::GetName()
 	return m_name;
 }
 
-UxInt8 Player::GetCharacterType()
+UxInt32 Player::GetCharacterType()
 {
 	return m_character;
 }
@@ -146,7 +145,7 @@ UxVoid Player::SetAnim( UxInt32 anim )
 	m_animation = anim;
 }
 
-UxVoid Player::SetCharacter( UxInt8 character )
+UxVoid Player::SetCharacter( UxInt32 character )
 {
 	m_character = character;
 }

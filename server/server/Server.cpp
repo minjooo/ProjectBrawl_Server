@@ -185,7 +185,7 @@ UxVoid Server::SendPacketJoinRoomOk( UxInt32 id, std::wstring roomName )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::wstring name, UxInt8 character_type, UxInt8 is_ready )
+UxVoid Server::SendPacketRoomUserList( UxInt32 id, UxInt32 who, std::wstring name, UxInt32 character_type, UxBool is_ready )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send room user list ok!\n";
@@ -211,7 +211,7 @@ UxVoid Server::SendPacketJoinRoomDeny( UxInt32 id )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 roomId, std::wstring roomName, UxInt8 participant )
+UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 roomId, std::wstring roomName, UxInt32 participant )
 {
 #ifdef LOG_ON
 	//std::cout << "[" << id << "] send room list!\n";
@@ -226,7 +226,7 @@ UxVoid Server::SendPacketRoomList( UxInt32 id, UxInt32 roomId, std::wstring room
 }
 
 //game room
-UxVoid Server::SendPacketSelectCharacter( UxInt32 id, UxInt32 who, UxInt8 cha )
+UxVoid Server::SendPacketSelectCharacter( UxInt32 id, UxInt32 who, UxInt32 cha )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send select character!\n";
@@ -310,7 +310,7 @@ UxVoid Server::SendPacketRotation( UxInt32 id, UxInt32 who, UxSingle rot )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim )
+UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt32 anim )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send animation!\n";
@@ -323,7 +323,7 @@ UxVoid Server::SendPacketAnimation( UxInt32 id, UxInt32 who, UxInt8 anim )
 	SendPacket( id, &packet );
 }
 
-UxVoid Server::SendPacketHit( UxInt32 id, UxInt32 who, UxInt8 char_type, UxInt8 hit_type )
+UxVoid Server::SendPacketHit( UxInt32 id, UxInt32 who, UxInt32 char_type, UxInt32 hit_type )
 {
 #ifdef LOG_ON
 	std::cout << "[" << id << "] send hit!\n";
