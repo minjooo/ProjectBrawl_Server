@@ -27,4 +27,4 @@
 #pragma comment(lib, "atls.lib")
 #pragma comment(lib, "Ws2_32.lib")
 
-#define LOG_ON
+//#define LOG_ON

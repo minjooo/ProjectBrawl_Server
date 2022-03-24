@@ -88,6 +88,22 @@ UxVoid Room::Update()
 				Server::GetInstance()->SendPacketResetCoolTime( eventInfo->id );
 			}
 			break;
+			case EEventType::SKILLDELAY:
+			{
+				if ( m_players[m_id2index[eventInfo->id]]->IsSkillCoolReset() )
+				{
+					m_players[m_id2index[eventInfo->id]]->SetSkillCool( false );
+					EVENTINFO ei { eventInfo->id, m_roomNum,EEventType::RESETCOOLTIME };
+					EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( coolTime )  , EEventType::RESETCOOLTIME };
+					Server::GetInstance()->m_timerQueue.push( ev );
+
+					for ( auto&& p : m_players )
+						if ( !p->IsEmpty() && p->GetId() != eventInfo->id )
+							if ( IsHit( m_id2index[eventInfo->id], m_id2index[p->GetId()] ) )
+								Server::GetInstance()->SendPacketHit( p->GetId(), eventInfo->id, m_players[m_id2index[eventInfo->id]]->GetCharacterType(), hitType[m_players[m_id2index[eventInfo->id]]->GetCharacterType()] );
+				}
+			}
+			break;
 			default:
 				break;
 			}
@@ -225,18 +241,9 @@ UxVoid Room::Update()
 #ifdef LOG_ON
 				std::cout << "[" << msg.id << "] recv attack packet" << std::endl;
 #endif
-				if ( m_players[m_id2index[msg.id]]->IsSkillCoolReset() )
-				{
-					m_players[m_id2index[msg.id]]->SetSkillCool( false );
-					EVENTINFO ei { msg.id, m_roomNum,EEventType::RESETCOOLTIME };
-					EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( coolTime )  , EEventType::RESETCOOLTIME };
-					Server::GetInstance()->m_timerQueue.push( ev );
-
-					for ( auto&& p : m_players )
-						if ( !p->IsEmpty() && p->GetId() != msg.id )
-							if ( IsHit( m_id2index[msg.id], m_id2index[p->GetId()] ) )
-								Server::GetInstance()->SendPacketHit( p->GetId(), msg.id, m_players[m_id2index[msg.id]]->GetCharacterType(), hitType[m_players[m_id2index[msg.id]]->GetCharacterType()] );
-				}
+				EVENTINFO ei { msg.id, m_roomNum, EEventType::SKILLDELAY };
+				EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( attackDelay[m_players[m_id2index[msg.id]]->GetCharacterType()] )  , EEventType::SKILLDELAY };
+				Server::GetInstance()->m_timerQueue.push( ev );
 			}
 			break;
 			case CS_DEDUCT_HEART:
@@ -246,7 +253,7 @@ UxVoid Room::Update()
 #endif
 				m_players[m_id2index[msg.id]]->DeductHeart();
 				m_players[m_id2index[msg.id]]->SetInvincible( true );
-				EVENTINFO ei { msg.id, m_roomNum,EEventType::INVINCIBLEDONE };
+				EVENTINFO ei { msg.id, m_roomNum, EEventType::INVINCIBLEDONE };
 				EVENT ev { eventKey, ei, std::chrono::high_resolution_clock::now() + std::chrono::seconds( invincibleTime )  , EEventType::INVINCIBLEDONE };
 				Server::GetInstance()->m_timerQueue.push( ev );
 				for ( auto&& p : m_players )
@@ -325,7 +332,7 @@ UxBool Room::IsGameOverAble()
 
 UxBool Room::IsHit( UxInt32 p1index, UxInt32 p2Index )
 {
-	if ( abs( m_players[p1index]->GetPosY() - m_players[p2Index]->GetPosY() ) > 180 )
+	if ( abs( m_players[p1index]->GetPosY() - m_players[p2Index]->GetPosY() ) > attackYRange[m_players[p1index]->GetCharacterType()] )
 		return false;
 	//left
 	if ( m_players[p1index]->GetRot() > 0 )

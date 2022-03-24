@@ -130,9 +130,14 @@ UxVoid WorkerThread::ProcThread()
 			memcpy( packet2msg.buff, over_ex->net_buf, sizeof( EVENTINFO ) );
 			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 		}
-		else
+		else//그냥 여기서 이벤트들 모두 처리
 		{
-			std::cout << "[LOG] Unknown Event Type\n";
+			message packet2msg;
+			memset( &packet2msg, 0x00, sizeof( message ) );
+			packet2msg.id = key; //eventKey
+			packet2msg.roomNum = ( *( EVENTINFO* )over_ex->net_buf ).roomNum;
+			memcpy( packet2msg.buff, over_ex->net_buf, sizeof( EVENTINFO ) );
+			Server::GetInstance()->m_roomMsgQueue.push( packet2msg );
 		}
 	}
 }

@@ -14,7 +14,7 @@ constexpr UxInt32 eventKey	= 10000;
 constexpr UxInt32 maxBuffer = 4096;
 
 //방 인원
-constexpr UxInt32 maxPlayer = 1;
+constexpr UxInt32 maxPlayer = 2;
 constexpr UxInt32 maxRoom	= 30;
 constexpr UxInt32 maxClient = 120;
 constexpr UxInt32 maxHeart	= 5;
@@ -34,14 +34,16 @@ constexpr POSITION startPosition[4] { {0, 670.0}, {-230, 670.0}, {-790.0, 670.0}
 
 //none 디트 엔지 소드 위치 로그 순
 constexpr UxInt8 hitType[6] { 0, HIT_KNOCKDOWN, HIT_KNOCKBACK, HIT_KNOCKDOWN , HIT_KNOCKBACK, HIT_KNOCKBACK };
-constexpr UxInt32 attackXRange[6] { 0, 150, 350, 100, 300, 400 };
-constexpr UxInt32 attackYRange = 180;
+constexpr UxInt32 attackXRange[6] { 0, 250, 700, 300, 500, 700 };
+constexpr UxInt32 attackYRange[6] { 0, 250, 150, 200, 200, 120 };
+//constexpr UxInt32 attackYRange = 180;
+constexpr UxInt32 attackDelay[6] { 0, 0.4, 0.4, 0.2, 0.6, 0.2 };
 
 enum class EEventType
 {
 	RECV, SEND,
 	TICK, GAMESTART,
-	INVINCIBLEDONE, RESETCOOLTIME
+	INVINCIBLEDONE, RESETCOOLTIME, SKILLDELAY
 };
 
 struct EVENTINFO

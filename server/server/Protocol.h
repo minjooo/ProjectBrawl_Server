@@ -2,6 +2,7 @@
 
 #pragma once
 
+
 #define SERVER_IP	"182.212.60.37"
 //#define SERVER_IP	"127.0.0.1"
 #define SERVER_PORT	3500
